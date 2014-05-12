@@ -39,8 +39,9 @@ func main() {
 	if err != nil {
 		log.Fatalf("error: %v", err)
 	}
+
 	err = syscall.Exec(name, os.Args[2:], os.Environ())
 	if err != nil {
-		panic(err)
+		log.Fatalf("error: exec failed: %v", err)
 	}
 }
