@@ -9,6 +9,8 @@ import (
 	"github.com/dotcloud/docker/pkg/user"
 )
 
+const VERSION = "1.0"
+
 func main() {
 	log.SetFlags(0) // no timestamps on our logs
 
@@ -17,6 +19,7 @@ func main() {
 		log.Printf("   ie: %s tianon bash", os.Args[0])
 		log.Printf("       %s nobody:root bash -c 'whoami && id'", os.Args[0])
 		log.Printf("       %s 1000:1 id", os.Args[0])
+		log.Printf("%s version: %s", os.Args[0], VERSION)
 		os.Exit(1)
 	}
 
