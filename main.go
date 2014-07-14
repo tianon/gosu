@@ -26,7 +26,9 @@ func main() {
 		log.Printf("   ie: %s tianon bash", os.Args[0])
 		log.Printf("       %s nobody:root bash -c 'whoami && id'", os.Args[0])
 		log.Printf("       %s 1000:1 id", os.Args[0])
-		log.Printf("%s version: %s", os.Args[0], VERSION)
+		log.Println()
+		log.Printf("%s version: %s (%s on %s/%s; %s)", os.Args[0], VERSION, runtime.Version(), runtime.GOOS, runtime.GOARCH, runtime.Compiler)
+		log.Println()
 		os.Exit(1)
 	}
 
