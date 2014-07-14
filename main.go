@@ -4,12 +4,19 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"runtime"
 	"syscall"
 
 	"github.com/dotcloud/docker/pkg/user"
 )
 
 const VERSION = "1.0"
+
+func init() {
+	// make sure we only have one process and that it runs on the main thread (so that ideally, when we Exec, we keep our user switches and stuff)
+	runtime.GOMAXPROCS(1)
+	runtime.LockOSThread()
+}
 
 func main() {
 	log.SetFlags(0) // no timestamps on our logs
