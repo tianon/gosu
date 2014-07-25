@@ -7,7 +7,7 @@ import (
 	"runtime"
 	"syscall"
 
-	"github.com/dotcloud/docker/pkg/user"
+	"github.com/docker/docker/pkg/user"
 )
 
 const VERSION = "1.1"
