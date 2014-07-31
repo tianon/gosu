@@ -1,7 +1,7 @@
 FROM tianon/golang
 
 # cache-fill
-RUN go get -d -v github.com/docker/docker/pkg/user
+RUN go get -d -v github.com/docker/libcontainer/user
 
 ADD . /go/src/github.com/tianon/gosu
 WORKDIR /go/src/github.com/tianon/gosu

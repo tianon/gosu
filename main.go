@@ -7,7 +7,7 @@ import (
 	"runtime"
 	"syscall"
 
-	"github.com/docker/docker/pkg/user"
+	"github.com/docker/libcontainer/user"
 )
 
 const VERSION = "1.1"
@@ -32,7 +32,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	uid, gid, suppGids, err := user.GetUserGroupSupplementary(os.Args[1], syscall.Getuid(), syscall.Getgid())
+	uid, gid, suppGids, home, err := user.GetUserGroupSupplementaryHome(os.Args[1], syscall.Getuid(), syscall.Getgid(), "/")
 	if err != nil {
 		log.Fatalf("error: failed parsing '%s': %v", os.Args[1], err)
 	}
@@ -45,6 +45,10 @@ func main() {
 	}
 	if err := syscall.Setuid(uid); err != nil {
 		log.Fatalf("error: failed to setuid: %v", err)
+	}
+	// TODO add a command-line flag to force-set HOME
+	if homeEnv := os.Getenv("HOME"); homeEnv == "" {
+		os.Setenv("HOME", home)
 	}
 
 	name, err := exec.LookPath(os.Args[2])
