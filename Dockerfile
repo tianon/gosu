@@ -1,4 +1,4 @@
-FROM tianon/golang
+FROM golang
 
 # cache-fill
 RUN go get -d -v github.com/docker/libcontainer/user
