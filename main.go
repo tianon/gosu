@@ -7,7 +7,7 @@ import (
 	"runtime"
 	"syscall"
 
-	"github.com/docker/libcontainer/user"
+	"github.com/docker/libcontainer/namespaces"
 )
 
 const VERSION = "1.1"
@@ -32,23 +32,9 @@ func main() {
 		os.Exit(1)
 	}
 
-	uid, gid, suppGids, home, err := user.GetUserGroupSupplementaryHome(os.Args[1], syscall.Getuid(), syscall.Getgid(), "/")
+	err := namespaces.SetupUser(os.Args[1])
 	if err != nil {
-		log.Fatalf("error: failed parsing '%s': %v", os.Args[1], err)
-	}
-
-	if err := syscall.Setgroups(suppGids); err != nil {
-		log.Fatalf("error: failed to setgroups: %v", err)
-	}
-	if err := syscall.Setgid(gid); err != nil {
-		log.Fatalf("error: failed to setgid: %v", err)
-	}
-	if err := syscall.Setuid(uid); err != nil {
-		log.Fatalf("error: failed to setuid: %v", err)
-	}
-	// TODO add a command-line flag to force-set HOME
-	if homeEnv := os.Getenv("HOME"); homeEnv == "" {
-		os.Setenv("HOME", home)
+		log.Fatalf("error: failed switching to %q: %v", os.Args[1], err)
 	}
 
 	name, err := exec.LookPath(os.Args[2])
