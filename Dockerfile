@@ -7,8 +7,6 @@ RUN mkdir -p /go/src/github.com/docker \
 
 ENV GOPATH $GOPATH:/go/src/github.com/docker/libcontainer/vendor
 
-ENV GOSU_ARCHES amd64 386 arm
-
 # disable CGO for ALL THE THINGS (to help ensure no libc)
 ENV CGO_ENABLED 0
 
