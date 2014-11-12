@@ -6,8 +6,6 @@ import (
 	"os/exec"
 	"runtime"
 	"syscall"
-
-	"github.com/docker/libcontainer/namespaces"
 )
 
 const VERSION = "1.1"
@@ -32,7 +30,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	err := namespaces.SetupUser(os.Args[1])
+	err := SetupUser(os.Args[1])
 	if err != nil {
 		log.Fatalf("error: failed switching to %q: %v", os.Args[1], err)
 	}
