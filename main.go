@@ -8,7 +8,7 @@ import (
 	"syscall"
 )
 
-const VERSION = "1.1"
+const VERSION = "1.2"
 
 func init() {
 	// make sure we only have one process and that it runs on the main thread (so that ideally, when we Exec, we keep our user switches and stuff)
