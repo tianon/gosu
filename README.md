@@ -15,3 +15,19 @@ Usage: ./gosu user-spec command [args]
 ```
 
 Once the user/group is processed, we switch to that user, then we `exec` the specified process and `gosu` itself is no longer resident or involved in the process lifecycle at all.  This avoids all the issues of signal passing and TTY, and punts them to the process invoking `gosu` and the process being invoked by `gosu`, where they belong.
+
+## Why?
+
+```console
+$ docker run -it --rm ubuntu:trusty su -c 'exec ps aux'
+USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+root         1  0.0  0.0  46636  2688 ?        Ss+  02:22   0:00 su -c exec ps a
+root         6  0.0  0.0  15576  2220 ?        Rs   02:22   0:00 ps aux
+$ docker run -it --rm ubuntu:trusty sudo ps aux
+USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+root         1  3.0  0.0  46020  3144 ?        Ss+  02:22   0:00 sudo ps aux
+root         7  0.0  0.0  15576  2172 ?        R+   02:22   0:00 ps aux
+$ docker run -it --rm -v $PWD/gosu-amd64:/usr/local/bin/gosu:ro ubuntu:trusty gosu root ps aux
+USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+root         1  0.0  0.0   7140   768 ?        Rs+  02:22   0:00 ps aux
+```
