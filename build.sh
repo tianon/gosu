@@ -11,4 +11,4 @@ docker run --rm gosu bash -c 'cd /go/bin && tar -c gosu*' | tar -xv
 sha256sum gosu* > SHA256SUMS
 cat SHA256SUMS
 ls -lFh gosu* SHA256SUMS*
-./gosu-amd64
+./gosu-$(dpkg --print-architecture)
