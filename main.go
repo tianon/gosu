@@ -8,7 +8,7 @@ import (
 	"syscall"
 )
 
-const VERSION = "1.2"
+const Version = "1.3"
 
 func init() {
 	// make sure we only have one process and that it runs on the main thread (so that ideally, when we Exec, we keep our user switches and stuff)
@@ -25,7 +25,7 @@ func main() {
 		log.Printf("       %s nobody:root bash -c 'whoami && id'", os.Args[0])
 		log.Printf("       %s 1000:1 id", os.Args[0])
 		log.Println()
-		log.Printf("%s version: %s (%s on %s/%s; %s)", os.Args[0], VERSION, runtime.Version(), runtime.GOOS, runtime.GOARCH, runtime.Compiler)
+		log.Printf("%s version: %s (%s on %s/%s; %s)", os.Args[0], Version, runtime.Version(), runtime.GOOS, runtime.GOARCH, runtime.Compiler)
 		log.Println()
 		os.Exit(1)
 	}
