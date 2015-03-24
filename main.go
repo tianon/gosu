@@ -30,6 +30,9 @@ func main() {
 		os.Exit(1)
 	}
 
+	// clear HOME so that SetupUser will set it
+	os.Setenv("HOME", "")
+
 	err := SetupUser(os.Args[1])
 	if err != nil {
 		log.Fatalf("error: failed switching to %q: %v", os.Args[1], err)
