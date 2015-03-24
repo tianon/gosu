@@ -1,4 +1,4 @@
-FROM golang:1.3-cross
+FROM golang:1.4-cross
 
 RUN mkdir -p /go/src/github.com/docker \
 	&& git clone https://github.com/docker/libcontainer.git /go/src/github.com/docker/libcontainer \
