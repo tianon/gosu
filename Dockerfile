@@ -3,7 +3,7 @@ FROM golang:1.4-cross
 RUN mkdir -p /go/src/github.com/docker \
 	&& git clone https://github.com/docker/libcontainer.git /go/src/github.com/docker/libcontainer \
 	&& cd /go/src/github.com/docker/libcontainer \
-	&& git checkout --quiet 4ae31b6ceb2c2557c9f05f42da61b0b808faa5a4
+	&& git checkout --quiet b322073f27b0e9e60b2ab07eff7f4e96a24cb3f9
 
 ENV GOPATH $GOPATH:/go/src/github.com/docker/libcontainer/vendor
 
