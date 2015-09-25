@@ -15,6 +15,8 @@ WORKDIR /go/src/github.com/tianon/gosu
 
 # gosu-$(dpkg --print-architecture)
 RUN GOARCH=amd64       go build -v -ldflags -d -o /go/bin/gosu-amd64
+RUN /go/bin/gosu-amd64 www-data id \
+	&& /go/bin/gosu-amd64 www-data ls -l /proc/self/fd
 RUN GOARCH=386         go build -v -ldflags -d -o /go/bin/gosu-i386
 RUN GOARCH=arm GOARM=5 go build -v -ldflags -d -o /go/bin/gosu-armel
 RUN GOARCH=arm GOARM=6 go build -v -ldflags -d -o /go/bin/gosu-armhf
