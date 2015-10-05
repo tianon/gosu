@@ -31,8 +31,7 @@ func main() {
 	// clear HOME so that SetupUser will set it
 	os.Setenv("HOME", "")
 
-	err := SetupUser(os.Args[1])
-	if err != nil {
+	if err := SetupUser(os.Args[1]); err != nil {
 		log.Fatalf("error: failed switching to %q: %v", os.Args[1], err)
 	}
 
@@ -41,8 +40,7 @@ func main() {
 		log.Fatalf("error: %v", err)
 	}
 
-	err = syscall.Exec(name, os.Args[2:], os.Environ())
-	if err != nil {
+	if err = syscall.Exec(name, os.Args[2:], os.Environ()); err != nil {
 		log.Fatalf("error: exec failed: %v", err)
 	}
 }
