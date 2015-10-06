@@ -32,9 +32,6 @@ func SetupUser(u string) error {
 	if err != nil {
 		return fmt.Errorf("get supplementary groups %s", err)
 	}
-	if err := chownFds(execUser.Uid, execUser.Gid); err != nil {
-		return fmt.Errorf("fchown fds %s", err)
-	}
 	if err := syscall.Setgroups(execUser.Sgids); err != nil {
 		return fmt.Errorf("setgroups %s", err)
 	}
