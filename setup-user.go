@@ -5,6 +5,7 @@ import (
 	"os"
 	"syscall"
 
+	"github.com/LTD-Beget/libcontainer/seccomp"
 	"github.com/docker/libcontainer/system"
 	"github.com/docker/libcontainer/user"
 )
@@ -28,6 +29,23 @@ func SetupUser(u string) error {
 	if err != nil {
 		return err
 	}
+
+	context := seccomp.New()
+	args := make([][]seccomp.Arg, 1)
+	args[0] = make([]seccomp.Arg, 1)
+	args[0][0] = seccomp.Arg{
+		Index: 0,
+		Op:    seccomp.LessThan,
+		Value: 1000,
+	}
+	setuid := seccomp.Syscall{
+		Value:  105,
+		Action: seccomp.Errno,
+		Args:   args,
+	}
+	context.Add(&setuid)
+	context.Load()
+
 	execUser, err := user.GetExecUserPath(u, &defaultExecUser, passwdPath, groupPath)
 	if err != nil {
 		return fmt.Errorf("get supplementary groups %s", err)
@@ -40,6 +58,9 @@ func SetupUser(u string) error {
 	}
 	if err := system.Setuid(execUser.Uid); err != nil {
 		return fmt.Errorf("setuid %s", err)
+	}
+	if syscall.Getuid() != execUser.Uid {
+		return fmt.Errorf("setuid failed")
 	}
 	// if we didn't get HOME already, set it based on the user's HOME
 	if envHome := os.Getenv("HOME"); envHome == "" {
