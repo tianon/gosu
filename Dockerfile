@@ -1,11 +1,9 @@
 FROM golang:1.5
 
-RUN mkdir -p /go/src/github.com/docker \
-	&& git clone https://github.com/docker/libcontainer.git /go/src/github.com/docker/libcontainer \
-	&& cd /go/src/github.com/docker/libcontainer \
-	&& git checkout --quiet b322073f27b0e9e60b2ab07eff7f4e96a24cb3f9
+RUN mkdir -p /go/src/github.com/opencontainers \
+	&& git clone -b v0.0.4 https://github.com/opencontainers/runc.git /go/src/github.com/opencontainers/runc
 
-ENV GOPATH $GOPATH:/go/src/github.com/docker/libcontainer/vendor
+ENV GOPATH $GOPATH:/go/src/github.com/opencontainers/runc/Godeps/_workspace
 
 # disable CGO for ALL THE THINGS (to help ensure no libc)
 ENV CGO_ENABLED 0
