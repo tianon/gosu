@@ -1,6 +1,6 @@
 FROM golang:1.5
 
-ENV RUNC_VERSION v0.0.4
+ENV RUNC_VERSION v0.0.5
 RUN mkdir -p /go/src/github.com/opencontainers \
 	&& git clone -b "$RUNC_VERSION" --depth 1 https://github.com/opencontainers/runc.git /go/src/github.com/opencontainers/runc
 
