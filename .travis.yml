@@ -1,0 +1,5 @@
+language: bash
+services:
+  - docker
+script:
+  - ./build.sh
