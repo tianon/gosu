@@ -3,3 +3,5 @@ services:
   - docker
 script:
   - ./build.sh
+  - ./test.sh gosu-amd64
+  - ./test.sh gosu-i386
