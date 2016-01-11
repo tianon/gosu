@@ -1,8 +1,13 @@
-FROM golang:1.5
+FROM golang:1.5-alpine
+
+RUN apk add --no-cache ca-certificates openssl
 
 ENV RUNC_VERSION v0.0.5
+
 RUN mkdir -p /go/src/github.com/opencontainers \
-	&& git clone -b "$RUNC_VERSION" --depth 1 https://github.com/opencontainers/runc.git /go/src/github.com/opencontainers/runc
+	&& wget -O- "https://github.com/opencontainers/runc/archive/${RUNC_VERSION}.tar.gz" \
+		| tar -xzC /go/src/github.com/opencontainers \
+	&& mv "/go/src/github.com/opencontainers/runc-${RUNC_VERSION#v}" /go/src/github.com/opencontainers/runc
 
 ENV GOPATH $GOPATH:/go/src/github.com/opencontainers/runc/Godeps/_workspace
 
