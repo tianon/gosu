@@ -63,3 +63,5 @@ RUN [ "$(gosu 1000:0 env | grep '^HOME=')" = 'HOME=/' ]
 RUN [ "$(gosu 1000:root env | grep '^HOME=')" = 'HOME=/' ]
 RUN [ "$(gosu games env | grep '^HOME=')" = 'HOME=/usr/games' ]
 RUN [ "$(gosu games:daemon env | grep '^HOME=')" = 'HOME=/usr/games' ]
+
+# something missing?  some other functionality we could test easily?  PR! :D
