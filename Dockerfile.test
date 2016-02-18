@@ -46,6 +46,10 @@ RUN gosu-t 1000:daemon "1000:$(id -g daemon):$(id -g daemon)" '1000:daemon:daemo
 RUN gosu-t games "$(id -u games):$(id -g games):$(id -G games)" 'games:games:games users'
 RUN gosu-t games:daemon "$(id -u games):$(id -g daemon):$(id -g daemon)" 'games:daemon:daemon'
 
+RUN gosu-t 0: "0:0:$(id -G root)" "root:root:$(id -Gn root)"
+RUN gosu-t '' "$(id -u):$(id -g):$(id -G)" "$(id -un):$(id -gn):$(id -Gn)"
+RUN gosu-t ':0' "$(id -u):0:0" "$(id -un):root:root"
+
 RUN [ "$(gosu 0 env | grep '^HOME=')" = 'HOME=/root' ]
 RUN [ "$(gosu 0:0 env | grep '^HOME=')" = 'HOME=/root' ]
 RUN [ "$(gosu root env | grep '^HOME=')" = 'HOME=/root' ]
