@@ -59,6 +59,8 @@ RUN set -x \
 	&& apk del .gosu-deps
 ```
 
+When using Alpine, it's probably also worth checking out [`su-exec`](https://github.com/ncopa/su-exec) (`apk add --no-cache su-exec`), which since version 0.2 is fully `gosu`-compatible in a fraction of the file size.
+
 ## Why?
 
 ```console
