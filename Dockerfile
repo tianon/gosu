@@ -14,29 +14,29 @@ ENV GOPATH $GOPATH:/go/src/github.com/opencontainers/runc/Godeps/_workspace
 # disable CGO for ALL THE THINGS (to help ensure no libc)
 ENV CGO_ENABLED 0
 
-ENV BUILD_FLAGS -v -ldflags -d
+ENV BUILD_FLAGS="-v -ldflags '-d -s -w'"
 
 COPY *.go /go/src/github.com/tianon/gosu/
 WORKDIR /go/src/github.com/tianon/gosu
 
 # gosu-$(dpkg --print-architecture)
 RUN set -x && GOARCH=amd64 \
-		go build $BUILD_FLAGS -o /go/bin/gosu-amd64 \
+		eval "go build $BUILD_FLAGS -o /go/bin/gosu-amd64" \
 	&& /go/bin/gosu-amd64 nobody id \
 	&& /go/bin/gosu-amd64 nobody ls -l /proc/self/fd
 RUN set -x && GOARCH=386 \
-		go build $BUILD_FLAGS -o /go/bin/gosu-i386 \
+		eval "go build $BUILD_FLAGS -o /go/bin/gosu-i386" \
 	&& /go/bin/gosu-i386 nobody id \
 	&& /go/bin/gosu-i386 nobody ls -l /proc/self/fd
 RUN set -x && GOARCH=arm GOARM=5 \
-		go build $BUILD_FLAGS -o /go/bin/gosu-armel
+		eval "go build $BUILD_FLAGS -o /go/bin/gosu-armel"
 RUN set -x && GOARCH=arm GOARM=6 \
-		go build $BUILD_FLAGS -o /go/bin/gosu-armhf
+		eval "go build $BUILD_FLAGS -o /go/bin/gosu-armhf"
 #RUN set -x && GOARCH=arm GOARM=7 \
-#		go build $BUILD_FLAGS -o /go/bin/gosu-armhf # boo Raspberry Pi, making life hard
+#		eval "go build $BUILD_FLAGS -o /go/bin/gosu-armhf" # boo Raspberry Pi, making life hard
 RUN set -x && GOARCH=arm64 \
-		go build $BUILD_FLAGS -o /go/bin/gosu-arm64
+		eval "go build $BUILD_FLAGS -o /go/bin/gosu-arm64"
 RUN set -x && GOARCH=ppc64 \
-		go build $BUILD_FLAGS -o /go/bin/gosu-ppc64
+		eval "go build $BUILD_FLAGS -o /go/bin/gosu-ppc64"
 RUN set -x && GOARCH=ppc64le \
-		go build $BUILD_FLAGS -o /go/bin/gosu-ppc64el
+		eval "go build $BUILD_FLAGS -o /go/bin/gosu-ppc64el"
