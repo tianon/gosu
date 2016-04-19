@@ -2,7 +2,7 @@ FROM golang:1.6-alpine
 
 RUN apk add --no-cache ca-certificates openssl
 
-ENV RUNC_VERSION v0.0.5
+ENV RUNC_VERSION v0.1.0
 
 RUN mkdir -p /go/src/github.com/opencontainers \
 	&& wget -O- "https://github.com/opencontainers/runc/archive/${RUNC_VERSION}.tar.gz" \
