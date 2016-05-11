@@ -1,6 +1,6 @@
 FROM golang:1.6-alpine
 
-RUN apk add --no-cache ca-certificates openssl
+RUN apk add --no-cache ca-certificates file openssl
 
 ENV RUNC_VERSION v0.1.0
 
@@ -22,21 +22,30 @@ WORKDIR /go/src/github.com/tianon/gosu
 # gosu-$(dpkg --print-architecture)
 RUN set -x && GOARCH=amd64 \
 		eval "go build $BUILD_FLAGS -o /go/bin/gosu-amd64" \
+	&& file /go/bin/gosu-amd64 \
 	&& /go/bin/gosu-amd64 nobody id \
 	&& /go/bin/gosu-amd64 nobody ls -l /proc/self/fd
 RUN set -x && GOARCH=386 \
 		eval "go build $BUILD_FLAGS -o /go/bin/gosu-i386" \
+	&& file /go/bin/gosu-i386 \
 	&& /go/bin/gosu-i386 nobody id \
 	&& /go/bin/gosu-i386 nobody ls -l /proc/self/fd
 RUN set -x && GOARCH=arm GOARM=5 \
-		eval "go build $BUILD_FLAGS -o /go/bin/gosu-armel"
+		eval "go build $BUILD_FLAGS -o /go/bin/gosu-armel" \
+	&& file /go/bin/gosu-armel
 RUN set -x && GOARCH=arm GOARM=6 \
-		eval "go build $BUILD_FLAGS -o /go/bin/gosu-armhf"
+		eval "go build $BUILD_FLAGS -o /go/bin/gosu-armhf" \
+	&& file /go/bin/gosu-armhf
 #RUN set -x && GOARCH=arm GOARM=7 \
 #		eval "go build $BUILD_FLAGS -o /go/bin/gosu-armhf" # boo Raspberry Pi, making life hard
 RUN set -x && GOARCH=arm64 \
-		eval "go build $BUILD_FLAGS -o /go/bin/gosu-arm64"
+		eval "go build $BUILD_FLAGS -o /go/bin/gosu-arm64" \
+	&& file /go/bin/gosu-arm64
 RUN set -x && GOARCH=ppc64 \
-		eval "go build $BUILD_FLAGS -o /go/bin/gosu-ppc64"
+		eval "go build $BUILD_FLAGS -o /go/bin/gosu-ppc64" \
+	&& file /go/bin/gosu-ppc64
 RUN set -x && GOARCH=ppc64le \
-		eval "go build $BUILD_FLAGS -o /go/bin/gosu-ppc64el"
+		eval "go build $BUILD_FLAGS -o /go/bin/gosu-ppc64el" \
+	&& file /go/bin/gosu-ppc64el
+
+RUN file /go/bin/gosu-*
