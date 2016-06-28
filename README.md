@@ -25,7 +25,7 @@ We assume installation inside Docker (probably not the right tool for most use-c
 ### `FROM debian`
 
 ```dockerfile
-ENV GOSU_VERSION 1.7
+ENV GOSU_VERSION 1.9
 RUN set -x \
 	&& apt-get update && apt-get install -y --no-install-recommends ca-certificates wget && rm -rf /var/lib/apt/lists/* \
 	&& wget -O /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$(dpkg --print-architecture)" \
@@ -42,7 +42,7 @@ RUN set -x \
 ### `FROM alpine` (3.3+)
 
 ```dockerfile
-ENV GOSU_VERSION 1.7
+ENV GOSU_VERSION 1.9
 RUN set -x \
 	&& apk add --no-cache --virtual .gosu-deps \
 		dpkg \
