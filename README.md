@@ -82,3 +82,19 @@ root         1  0.0  0.0   7140   768 ?        Rs+  02:22   0:00 ps aux
 Additionally, due to the fact that `gosu` is using Docker's own code for processing these `user:group`, it has exact 1:1 parity with Docker's own `--user` flag.
 
 If you're curious about the edge cases that `gosu` handles, see [`Dockerfile.test`](Dockerfile.test) for the "test suite" (and the associated [`test.sh`](test.sh) script that wraps this up for testing arbitrary binaries).
+
+## Alternatives
+
+### `su-exec`
+
+As mentioned above, [`su-exec`](https://github.com/ncopa/su-exec) is a very minimal re-write of `gosu` in C, making for a much smaller binary.
+
+### `chroot`
+
+With the `--userspec` flag, `chroot` can provide similar benefits/behavior:
+
+```console
+$ docker run -it --rm ubuntu:trusty chroot --userspec=nobody / ps aux
+USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+nobody       1  5.0  0.0   7136   756 ?        Rs+  17:04   0:00 ps aux
+```
