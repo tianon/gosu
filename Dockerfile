@@ -50,8 +50,7 @@ RUN set -x \
 	&& eval "GOARCH=ppc64le go build $BUILD_FLAGS -o /go/bin/gosu-ppc64el" \
 	&& file /go/bin/gosu-ppc64el
 RUN set -x \
-		&& eval "GOARCH=s390x go build $BUILD_FLAGS -o /go/bin/gosu-s390x" \
-		&& file /go/bin/gosu-s390x
-
-
+	&& eval "GOARCH=s390x go build $BUILD_FLAGS -o /go/bin/gosu-s390x" \
+	&& file /go/bin/gosu-s390x
+	
 RUN file /go/bin/gosu-*
