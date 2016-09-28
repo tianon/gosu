@@ -23,6 +23,7 @@ WORKDIR /go/src/github.com/tianon/gosu
 RUN set -x \
 	&& eval "GOARCH=amd64 go build $BUILD_FLAGS -o /go/bin/gosu-amd64" \
 	&& file /go/bin/gosu-amd64 \
+	&& { /go/bin/gosu-amd64 || true; } \
 	&& /go/bin/gosu-amd64 nobody id \
 	&& /go/bin/gosu-amd64 nobody ls -l /proc/self/fd
 RUN set -x \
@@ -52,5 +53,5 @@ RUN set -x \
 RUN set -x \
 	&& eval "GOARCH=s390x go build $BUILD_FLAGS -o /go/bin/gosu-s390x" \
 	&& file /go/bin/gosu-s390x
-	
+
 RUN file /go/bin/gosu-*

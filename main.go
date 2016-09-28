@@ -4,7 +4,9 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"runtime"
+	"strings"
 	"syscall"
 )
 
@@ -18,12 +20,14 @@ func main() {
 	log.SetFlags(0) // no timestamps on our logs
 
 	if len(os.Args) <= 2 {
-		log.Printf("Usage: %s user-spec command [args]", os.Args[0])
-		log.Printf("   ie: %s tianon bash", os.Args[0])
-		log.Printf("       %s nobody:root bash -c 'whoami && id'", os.Args[0])
-		log.Printf("       %s 1000:1 id", os.Args[0])
+		self := filepath.Base(os.Args[0])
+		log.Printf("Usage: %s user-spec command [args]", self)
+		log.Printf("   ie: %s tianon bash", self)
+		log.Printf("       %s nobody:root bash -c 'whoami && id'", self)
+		log.Printf("       %s 1000:1 id", self)
 		log.Println()
-		log.Printf("%s version: %s (%s on %s/%s; %s)", os.Args[0], Version, runtime.Version(), runtime.GOOS, runtime.GOARCH, runtime.Compiler)
+		log.Printf("%s version: %s (%s on %s/%s; %s)", self, Version, runtime.Version(), runtime.GOOS, runtime.GOARCH, runtime.Compiler)
+		log.Printf("%s license: GPL-3 (full text at https://github.com/tianon/gosu)\n", strings.Repeat(" ", len(self)))
 		log.Println()
 		os.Exit(1)
 	}
