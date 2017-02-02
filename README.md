@@ -25,7 +25,7 @@ We assume installation inside Docker (probably not the right tool for most use-c
 ### `FROM debian`
 
 ```dockerfile
-ENV GOSU_VERSION 1.9
+ENV GOSU_VERSION 1.10
 RUN set -x \
 	&& apt-get update && apt-get install -y --no-install-recommends ca-certificates wget && rm -rf /var/lib/apt/lists/* \
 	&& dpkgArch="$(dpkg --print-architecture | awk -F- '{ print $NF }')" \
@@ -43,7 +43,7 @@ RUN set -x \
 ### `FROM alpine` (3.3+)
 
 ```dockerfile
-ENV GOSU_VERSION 1.9
+ENV GOSU_VERSION 1.10
 RUN set -x \
 	&& apk add --no-cache --virtual .gosu-deps \
 		dpkg \
