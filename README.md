@@ -54,7 +54,7 @@ If you're curious about the edge cases that `gosu` handles, see [`Dockerfile.tes
 
 ### `su-exec`
 
-As mentioned above, [`su-exec`](https://github.com/ncopa/su-exec) is a very minimal re-write of `gosu` in C, making for a much smaller binary.
+As mentioned in `INSTALL.md`, [`su-exec`](https://github.com/ncopa/su-exec) is a very minimal re-write of `gosu` in C, making for a much smaller binary, and is available in the `main` Alpine package repository.
 
 ### `chroot`
 
