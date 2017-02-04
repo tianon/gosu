@@ -65,3 +65,9 @@ $ docker run -it --rm ubuntu:trusty chroot --userspec=nobody / ps aux
 USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
 nobody       1  5.0  0.0   7136   756 ?        Rs+  17:04   0:00 ps aux
 ```
+
+### Others
+
+I'm not terribly familiar with them, but a few other alternatives I'm aware of include:
+
+- `chpst` (part of `runit`)
