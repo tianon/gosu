@@ -1,4 +1,4 @@
-FROM golang:1.7-alpine
+FROM golang:1.9-alpine
 
 RUN apk add --no-cache ca-certificates file openssl
 
@@ -22,15 +22,10 @@ WORKDIR /go/src/github.com/tianon/gosu
 # gosu-$(dpkg --print-architecture)
 RUN set -x \
 	&& eval "GOARCH=amd64 go build $BUILD_FLAGS -o /go/bin/gosu-amd64" \
-	&& file /go/bin/gosu-amd64 \
-	&& { /go/bin/gosu-amd64 || true; } \
-	&& /go/bin/gosu-amd64 nobody id \
-	&& /go/bin/gosu-amd64 nobody ls -l /proc/self/fd
+	&& file /go/bin/gosu-amd64
 RUN set -x \
 	&& eval "GOARCH=386 go build $BUILD_FLAGS -o /go/bin/gosu-i386" \
-	&& file /go/bin/gosu-i386 \
-	&& /go/bin/gosu-i386 nobody id \
-	&& /go/bin/gosu-i386 nobody ls -l /proc/self/fd
+	&& file /go/bin/gosu-i386
 RUN set -x \
 	&& eval "GOARCH=arm GOARM=5 go build $BUILD_FLAGS -o /go/bin/gosu-armel" \
 	&& file /go/bin/gosu-armel
