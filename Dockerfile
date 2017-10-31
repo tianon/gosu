@@ -19,6 +19,15 @@ ENV BUILD_FLAGS="-v -ldflags '-d -s -w'"
 COPY *.go /go/src/github.com/tianon/gosu/
 WORKDIR /go/src/github.com/tianon/gosu
 
+# run once with host arch to make sure the binaries work
+RUN set -x \
+	&& eval "go build $BUILD_FLAGS -o /go/bin/gosu-test" \
+	&& file /go/bin/gosu-test \
+	&& { /go/bin/gosu-test || true; } \
+	&& /go/bin/gosu-test nobody id \
+	&& /go/bin/gosu-test nobody ls -l /proc/self/fd \
+	&& rm /go/bin/gosu-test
+
 # gosu-$(dpkg --print-architecture)
 RUN set -x \
 	&& eval "GOARCH=amd64 go build $BUILD_FLAGS -o /go/bin/gosu-amd64" \
