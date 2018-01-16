@@ -13,4 +13,4 @@ sha256sum gosu* | tee SHA256SUMS
 file gosu*
 ls -lFh gosu* SHA256SUMS*
 
-"./gosu-$(dpkg --print-architecture)" || :
+"./gosu-$(dpkg --print-architecture)" --help
