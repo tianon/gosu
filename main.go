@@ -1,6 +1,8 @@
 package main // import "github.com/tianon/gosu"
 
 import (
+	"bytes"
+	"fmt"
 	"log"
 	"os"
 	"os/exec"
@@ -8,6 +10,7 @@ import (
 	"runtime"
 	"strings"
 	"syscall"
+	"text/template"
 )
 
 func init() {
@@ -16,19 +19,46 @@ func init() {
 	runtime.LockOSThread()
 }
 
+func version() string {
+	return fmt.Sprintf(`%s (%s on %s/%s; %s)`, Version, runtime.Version(), runtime.GOOS, runtime.GOARCH, runtime.Compiler)
+}
+
+func usage() string {
+	t := template.Must(template.New("usage").Parse(`
+Usage: {{ .Self }} user-spec command [args]
+   ie: {{ .Self }} tianon bash
+       {{ .Self }} nobody:root bash -c 'whoami && id'
+       {{ .Self }} 1000:1 id
+
+{{ .Self }} version: {{ .Version }}
+{{ .Self }} license: GPL-3 (full text at https://github.com/tianon/gosu)
+`))
+	var b bytes.Buffer
+	template.Must(t, t.Execute(&b, struct {
+		Self    string
+		Version string
+	}{
+		Self:    filepath.Base(os.Args[0]),
+		Version: version(),
+	}))
+	return strings.TrimSpace(b.String()) + "\n"
+}
+
 func main() {
 	log.SetFlags(0) // no timestamps on our logs
 
+	if len(os.Args) >= 2 {
+		switch os.Args[1] {
+		case "--help", "-h", "-?":
+			fmt.Println(usage())
+			os.Exit(0)
+		case "--version", "-v":
+			fmt.Println(version())
+			os.Exit(0)
+		}
+	}
 	if len(os.Args) <= 2 {
-		self := filepath.Base(os.Args[0])
-		log.Printf("Usage: %s user-spec command [args]", self)
-		log.Printf("   ie: %s tianon bash", self)
-		log.Printf("       %s nobody:root bash -c 'whoami && id'", self)
-		log.Printf("       %s 1000:1 id", self)
-		log.Println()
-		log.Printf("%s version: %s (%s on %s/%s; %s)", self, Version, runtime.Version(), runtime.GOOS, runtime.GOARCH, runtime.Compiler)
-		log.Printf("%s license: GPL-3 (full text at https://github.com/tianon/gosu)\n", strings.Repeat(" ", len(self)))
-		log.Println()
+		log.Println(usage())
 		os.Exit(1)
 	}
 
