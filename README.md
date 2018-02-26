@@ -18,6 +18,12 @@ Usage: ./gosu user-spec command [args]
 
 Once the user/group is processed, we switch to that user, then we `exec` the specified process and `gosu` itself is no longer resident or involved in the process lifecycle at all.  This avoids all the issues of signal passing and TTY, and punts them to the process invoking `gosu` and the process being invoked by `gosu`, where they belong.
 
+## Warning
+
+The core use case for `gosu` is to step _down_ from `root` to a non-privilged user during container startup (specifically in the `ENTRYPOINT`, usually).
+
+Uses of `gosu` beyond that could very well suffer from vulnerabilities such as CVE-2016-2779 (from which the Docker use case naturally shields us); see [`tianon/gosu#37`](https://github.com/tianon/gosu/issues/37) for some discussion around this point.
+
 ## Installation
 
 High-level steps:
