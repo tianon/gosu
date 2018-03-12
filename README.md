@@ -9,9 +9,12 @@ The core of how `gosu` works is stolen directly from how Docker/libcontainer its
 ```console
 $ gosu
 Usage: ./gosu user-spec command [args]
-   ie: ./gosu tianon bash
-       ./gosu nobody:root bash -c 'whoami && id'
-       ./gosu 1000:1 id
+
+Examples:
+
+        ./gosu tianon bash
+        ./gosu nobody:root bash -c 'whoami && id'
+        ./gosu 1000:1 id
 
 ./gosu version: 1.1 (go1.3.1 on linux/amd64; gc)
 ```
