@@ -48,6 +48,7 @@ RUN set -eux; \
 	\
 	chmod +x /usr/local/bin/gosu; \
 # verify that the binary works
+	gosu --version; \
 	gosu nobody true
 ```
 
@@ -81,5 +82,6 @@ RUN set -eux; \
 	\
 	chmod +x /usr/local/bin/gosu; \
 # verify that the binary works
+	gosu --version; \
 	gosu nobody true
 ```
