@@ -26,9 +26,12 @@ func version() string {
 func usage() string {
 	t := template.Must(template.New("usage").Parse(`
 Usage: {{ .Self }} user-spec command [args]
-   ie: {{ .Self }} tianon bash
-       {{ .Self }} nobody:root bash -c 'whoami && id'
-       {{ .Self }} 1000:1 id
+
+Examples:
+
+	{{ .Self }} tianon bash
+	{{ .Self }} nobody:root bash -c 'whoami && id'
+	{{ .Self }} 1000:1 id
 
 {{ .Self }} version: {{ .Version }}
 {{ .Self }} license: GPL-3 (full text at https://github.com/tianon/gosu)

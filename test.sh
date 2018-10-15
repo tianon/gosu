@@ -3,7 +3,7 @@ set -e
 
 usage() {
 	echo "usage: $1 gosu-binary"
-	echo "   ie: $1 ./gosu-amd64"
+	echo "  e.g: $1 ./gosu-amd64"
 }
 
 gosu="$1"
