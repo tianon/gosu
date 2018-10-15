@@ -26,7 +26,7 @@ func version() string {
 func usage() string {
 	t := template.Must(template.New("usage").Parse(`
 Usage: {{ .Self }} user-spec command [args]
-   ie: {{ .Self }} tianon bash
+   eg: {{ .Self }} tianon bash
        {{ .Self }} nobody:root bash -c 'whoami && id'
        {{ .Self }} 1000:1 id
 
