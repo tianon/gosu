@@ -4,16 +4,29 @@ We assume installation inside Docker (probably not the right tool for most use-c
 
 ## `FROM debian`
 
+[Debian 9 ("Debian Stretch") or newer](https://packages.debian.org/gosu):
+
+```dockerfile
+RUN set -eux; \
+	apt-get update; \
+	apt-get install -y gosu; \
+	rm -rf /var/lib/apt/lists/*; \
+# verify that the binary works
+	gosu nobody true
+```
+
+Older Debian releases (or newer `gosu` releases):
+
 ```dockerfile
 ENV GOSU_VERSION 1.10
-RUN set -ex; \
-	\
-	fetchDeps=' \
-		ca-certificates \
-		wget \
-	'; \
+RUN set -eux; \
+# save list of currently installed packages for later so we can clean up
+	savedAptMark="$(apt-mark showmanual)"; \
 	apt-get update; \
-	apt-get install -y --no-install-recommends $fetchDeps; \
+	apt-get install -y --no-install-recommends ca-certificates wget; \
+	if ! command -v gpg; then \
+		apt-get install -y --no-install-recommends gnupg2 dirmngr; \
+	fi; \
 	rm -rf /var/lib/apt/lists/*; \
 	\
 	dpkgArch="$(dpkg --print-architecture | awk -F- '{ print $NF }')"; \
@@ -22,27 +35,33 @@ RUN set -ex; \
 	\
 # verify the signature
 	export GNUPGHOME="$(mktemp -d)"; \
+# for flaky keyservers, consider https://github.com/tianon/pgp-happy-eyeballs, ala https://github.com/docker-library/php/pull/666
 	gpg --keyserver ha.pool.sks-keyservers.net --recv-keys B42F6819007F00F88E364FD4036A9C25BF357DD4; \
 	gpg --batch --verify /usr/local/bin/gosu.asc /usr/local/bin/gosu; \
-	rm -r "$GNUPGHOME" /usr/local/bin/gosu.asc; \
+	command -v gpgconf && gpgconf --kill all || :; \
+	rm -rf "$GNUPGHOME" /usr/local/bin/gosu.asc; \
+	\
+# clean up fetch dependencies
+	apt-mark auto '.*' > /dev/null; \
+	[ -z "$savedAptMark" ] || apt-mark manual $savedAptMark; \
+	apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
 	\
 	chmod +x /usr/local/bin/gosu; \
 # verify that the binary works
-	gosu nobody true; \
-	\
-	apt-get purge -y --auto-remove $fetchDeps
+	gosu nobody true
 ```
 
-## `FROM alpine` (3.3+)
+## `FROM alpine` (3.7+)
+
+**Note:** when using Alpine, it's probably also worth checking out [`su-exec`](https://github.com/ncopa/su-exec) (`apk add --no-cache su-exec`) instead, which since version 0.2 is fully `gosu`-compatible in a fraction of the file size.
 
 ```dockerfile
 ENV GOSU_VERSION 1.10
-RUN set -ex; \
+RUN set -eux; \
 	\
 	apk add --no-cache --virtual .gosu-deps \
 		dpkg \
 		gnupg \
-		openssl \
 	; \
 	\
 	dpkgArch="$(dpkg --print-architecture | awk -F- '{ print $NF }')"; \
@@ -51,42 +70,16 @@ RUN set -ex; \
 	\
 # verify the signature
 	export GNUPGHOME="$(mktemp -d)"; \
+# for flaky keyservers, consider https://github.com/tianon/pgp-happy-eyeballs, ala https://github.com/docker-library/php/pull/666
 	gpg --keyserver ha.pool.sks-keyservers.net --recv-keys B42F6819007F00F88E364FD4036A9C25BF357DD4; \
 	gpg --batch --verify /usr/local/bin/gosu.asc /usr/local/bin/gosu; \
-	rm -r "$GNUPGHOME" /usr/local/bin/gosu.asc; \
+	command -v gpgconf && gpgconf --kill all || :; \
+	rm -rf "$GNUPGHOME" /usr/local/bin/gosu.asc; \
+	\
+# clean up fetch dependencies
+	apk del --no-network .gosu-deps; \
 	\
 	chmod +x /usr/local/bin/gosu; \
 # verify that the binary works
-	gosu nobody true; \
-	\
-	apk del .gosu-deps
-```
-
-When using Alpine, it's probably also worth checking out [`su-exec`](https://github.com/ncopa/su-exec) (`apk add --no-cache su-exec`), which since version 0.2 is fully `gosu`-compatible in a fraction of the file size.
-
-## `FROM centos`
-
-```dockerfile
-ENV GOSU_VERSION 1.10
-RUN set -ex; \
-	\
-	yum -y install epel-release; \
-	yum -y install wget dpkg; \
-	\
-	dpkgArch="$(dpkg --print-architecture | awk -F- '{ print $NF }')"; \
-	wget -O /usr/bin/gosu "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$dpkgArch"; \
-	wget -O /tmp/gosu.asc "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$dpkgArch.asc"; \
-	\
-# verify the signature
-	export GNUPGHOME="$(mktemp -d)"; \
-	gpg --keyserver ha.pool.sks-keyservers.net --recv-keys B42F6819007F00F88E364FD4036A9C25BF357DD4; \
-	gpg --batch --verify /tmp/gosu.asc /usr/bin/gosu; \
-	rm -r "$GNUPGHOME" /tmp/gosu.asc; \
-	\
-	chmod +x /usr/bin/gosu; \
-# verify that the binary works
-	gosu nobody true; \
-	\
-	yum -y remove wget dpkg; \
-	yum clean all
+	gosu nobody true
 ```
