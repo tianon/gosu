@@ -11,6 +11,8 @@ RUN set -ex; \
 	fetchDeps=' \
 		ca-certificates \
 		wget \
+		gnupg2 \
+		dirmngr \
 	'; \
 	apt-get update; \
 	apt-get install -y --no-install-recommends $fetchDeps; \
