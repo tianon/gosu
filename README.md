@@ -30,7 +30,7 @@ High-level steps:
 
 1. download `gosu-$(dpkg --print-architecture | awk -F- '{ print $NF }')` as `gosu`
 2. download `gosu-$(dpkg --print-architecture | awk -F- '{ print $NF }').asc` as `gosu.asc`
-3. fetch my public key (to verify your download): `gpg --keyserver ha.pool.sks-keyservers.net --recv-keys B42F6819007F00F88E364FD4036A9C25BF357DD4`
+3. fetch my public key (to verify your download): `gpg --batch --keyserver ha.pool.sks-keyservers.net --recv-keys B42F6819007F00F88E364FD4036A9C25BF357DD4`
 4. `gpg --batch --verify gosu.asc gosu`
 5. `chmod +x gosu`
 

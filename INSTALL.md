@@ -36,7 +36,7 @@ RUN set -eux; \
 # verify the signature
 	export GNUPGHOME="$(mktemp -d)"; \
 # for flaky keyservers, consider https://github.com/tianon/pgp-happy-eyeballs, ala https://github.com/docker-library/php/pull/666
-	gpg --keyserver ha.pool.sks-keyservers.net --recv-keys B42F6819007F00F88E364FD4036A9C25BF357DD4; \
+	gpg --batch --keyserver ha.pool.sks-keyservers.net --recv-keys B42F6819007F00F88E364FD4036A9C25BF357DD4; \
 	gpg --batch --verify /usr/local/bin/gosu.asc /usr/local/bin/gosu; \
 	command -v gpgconf && gpgconf --kill all || :; \
 	rm -rf "$GNUPGHOME" /usr/local/bin/gosu.asc; \
@@ -72,7 +72,7 @@ RUN set -eux; \
 # verify the signature
 	export GNUPGHOME="$(mktemp -d)"; \
 # for flaky keyservers, consider https://github.com/tianon/pgp-happy-eyeballs, ala https://github.com/docker-library/php/pull/666
-	gpg --keyserver ha.pool.sks-keyservers.net --recv-keys B42F6819007F00F88E364FD4036A9C25BF357DD4; \
+	gpg --batch --keyserver ha.pool.sks-keyservers.net --recv-keys B42F6819007F00F88E364FD4036A9C25BF357DD4; \
 	gpg --batch --verify /usr/local/bin/gosu.asc /usr/local/bin/gosu; \
 	command -v gpgconf && gpgconf --kill all || :; \
 	rm -rf "$GNUPGHOME" /usr/local/bin/gosu.asc; \
