@@ -58,9 +58,15 @@ If you're curious about the edge cases that `gosu` handles, see [`Dockerfile.tes
 
 ## Alternatives
 
-### `su-exec`
+### `ncopa/su-exec`
 
-As mentioned in `INSTALL.md`, [`su-exec`](https://github.com/ncopa/su-exec) is a very minimal re-write of `gosu` in C, making for a much smaller binary, and is available in the `main` Alpine package repository.
+As mentioned in `INSTALL.md`, [`ncopa/su-exec`](https://github.com/ncopa/su-exec) is a very minimal re-write of `gosu` in C, making for a much smaller binary, and is available in the `main` Alpine package repository.
+
+The ncopa's su-exec have critical bugs (or features), it will use root permission silently if invalid user-spec given !
+
+### `songdongsheng/su-exec`
+
+[`songdongsheng/su-exec`](https://github.com/songdongsheng/su-exec) is another very minimal re-write of `gosu` in C, making for a much smaller binary, and safer than the [`ncopa/su-exec`](https://github.com/ncopa/su-exec).
 
 ### `chroot`
 
