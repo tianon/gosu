@@ -45,6 +45,9 @@ RUN set -eux; \
 	eval "GOARCH=arm64 go build $BUILD_FLAGS -o /go/bin/gosu-arm64"; \
 	file /go/bin/gosu-arm64
 RUN set -eux; \
+	eval "GOARCH=mips64le go build $BUILD_FLAGS -o /go/bin/gosu-mips64el"; \
+	file /go/bin/gosu-mips64el
+RUN set -eux; \
 	eval "GOARCH=ppc64 go build $BUILD_FLAGS -o /go/bin/gosu-ppc64"; \
 	file /go/bin/gosu-ppc64
 RUN set -eux; \
@@ -53,8 +56,5 @@ RUN set -eux; \
 RUN set -eux; \
 	eval "GOARCH=s390x go build $BUILD_FLAGS -o /go/bin/gosu-s390x"; \
 	file /go/bin/gosu-s390x
-RUN set -eux; \
-	eval "GOARCH=mips64le go build $BUILD_FLAGS -o /go/bin/gosu-mips64el"; \
-	file /go/bin/gosu-mips64el
 
 RUN file /go/bin/gosu-*
