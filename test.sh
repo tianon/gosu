@@ -1,13 +1,23 @@
-#!/bin/bash
-set -e
+#!/usr/bin/env bash
+set -Eeuo pipefail
 
 usage() {
-	echo "usage: $0 gosu-binary"
+	echo "usage: $0 [--platform] gosu-binary"
 	echo "   eg: $0 ./gosu-amd64"
+	echo "       $0 --debian ./gosu-amd64"
 }
 
-gosu="$1"
+df='Dockerfile.test-alpine'
+case "${1:-}" in
+	--alpine | --debian)
+		df="Dockerfile.test-${1#--}"
+		shift
+		;;
+esac
+
+gosu="${1:-}"
 shift || { usage >&2; exit 1; }
+[ -f "$gosu" ] || { usage >&2; exit 1; }
 
 trap '{ set +x; echo; echo FAILED; echo; } >&2' ERR
 
@@ -17,8 +27,8 @@ dir="$(mktemp -d -t gosu-test-XXXXXXXXXX)"
 base="$(basename "$dir")"
 img="gosu-test:$base"
 trap "rm -rf '$dir'" EXIT
-cp Dockerfile.test "$dir/Dockerfile"
-cp "$gosu" "$dir/gosu"
+cp -T "$df" "$dir/Dockerfile"
+cp -T "$gosu" "$dir/gosu"
 docker build -t "$img" "$dir"
 rm -rf "$dir"
 trap - EXIT
