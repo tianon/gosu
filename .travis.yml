@@ -5,3 +5,5 @@ script:
   - ./build.sh
   - ./test.sh gosu-amd64
   - ./test.sh gosu-i386
+  - ./test.sh --debian gosu-amd64
+  - ./test.sh --debian gosu-i386
