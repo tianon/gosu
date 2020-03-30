@@ -35,7 +35,8 @@ trap - EXIT
 
 trap "docker rm -f '$base' > /dev/null; docker rmi -f '$img' > /dev/null" EXIT
 
-docker run -d --name "$base" "$img" gosu root sleep 1000
+# using explicit "--init=false" in case dockerd is running with "--init" (because that will skew our process numbers)
+docker run -d --init=false --name "$base" "$img" gosu root sleep 1000
 sleep 1 # give it plenty of time to get through "gosu" and into the "sleep"
 [ "$(docker top "$base" | wc -l)" = 2 ]
 # "docker top" should have only two lines
