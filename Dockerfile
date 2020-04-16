@@ -1,8 +1,9 @@
-FROM golang:1.13-alpine3.10
+FROM golang:1.13-alpine3.11
 
 RUN apk add --no-cache file
 
-ENV RUNC_VERSION v1.0.0-rc9
+# https://github.com/opencontainers/runc/releases
+ENV RUNC_VERSION v1.0.0-rc10
 
 RUN set -eux; \
 	wget -O runc.tgz "https://github.com/opencontainers/runc/archive/${RUNC_VERSION}.tar.gz"; \
