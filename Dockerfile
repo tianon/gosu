@@ -2,22 +2,19 @@ FROM golang:1.14-alpine3.12
 
 RUN apk add --no-cache file
 
-# https://github.com/opencontainers/runc/releases
-ENV RUNC_VERSION v1.0.0-rc10
-
-RUN set -eux; \
-	wget -O runc.tgz "https://github.com/opencontainers/runc/archive/${RUNC_VERSION}.tar.gz"; \
-	mkdir -p /go/src/github.com/opencontainers/runc; \
-	tar -xf runc.tgz -C /go/src/github.com/opencontainers/runc --strip-components=1; \
-	rm runc.tgz
-
 # disable CGO for ALL THE THINGS (to help ensure no libc)
 ENV CGO_ENABLED 0
 
+WORKDIR /go/src/github.com/tianon/gosu
+
+COPY go.mod go.sum ./
+RUN set -eux; \
+	go mod download; \
+	go mod verify
+
 ENV BUILD_FLAGS="-v -ldflags '-d -s -w'"
 
-COPY *.go /go/src/github.com/tianon/gosu/
-WORKDIR /go/src/github.com/tianon/gosu
+COPY *.go ./
 
 # gosu-$(dpkg --print-architecture)
 RUN set -eux; \
