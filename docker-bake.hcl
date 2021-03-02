@@ -23,6 +23,29 @@ group "default" {
   targets = ["image-local"]
 }
 
+group "validate" {
+  targets = ["lint", "vendor-validate"]
+}
+
+target "lint" {
+  inherits = ["go-version"]
+  dockerfile = "./hack/lint.Dockerfile"
+  target = "lint"
+}
+
+target "vendor-validate" {
+  inherits = ["go-version"]
+  dockerfile = "./hack/vendor.Dockerfile"
+  target = "validate"
+}
+
+target "vendor-update" {
+  inherits = ["go-version"]
+  dockerfile = "./hack/vendor.Dockerfile"
+  target = "update"
+  output = ["."]
+}
+
 target "artifact" {
   args = {
     GIT_REF = GITHUB_REF
