@@ -91,7 +91,7 @@ As the [Docker image](https://hub.docker.com/r/tianon/gosu/) is multi-platform w
 ```Dockerfile
 ARG GOSU_VERSION=1.13.0
 
-FROM --platform=${TARGETPLATFORM:-linux/amd64} tianon/gosu:${GOSU_VERSION}
+FROM --platform=${TARGETPLATFORM:-linux/amd64} tianon/gosu:${GOSU_VERSION} AS gosu
 FROM --platform=${TARGETPLATFORM:-linux/amd64} alpine
 COPY --from=gosu / /
 RUN gosu --version
