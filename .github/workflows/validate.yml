@@ -1,0 +1,28 @@
+name: validate
+
+on:
+  push:
+    branches:
+      - 'master'
+    tags:
+      - 'v*'
+      - 'dockerfile/*'
+  pull_request:
+    branches:
+      - 'master'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v2
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      -
+        name: Validate
+        uses: docker/bake-action@v1
+        with:
+          targets: validate

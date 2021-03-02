@@ -1,0 +1,114 @@
+name: build
+
+on:
+  push:
+    branches:
+      - 'master'
+    tags:
+      - 'v*'
+    paths-ignore:
+      - '**.md'
+  pull_request:
+    branches:
+      - 'master'
+    paths-ignore:
+      - '**.md'
+
+env:
+  DOCKERHUB_SLUG: crazymax/gosu
+  GHCR_SLUG: ghcr.io/crazy-max/gosu
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      -
+        name: Docker meta
+        id: docker_meta
+        uses: crazy-max/ghaction-docker-meta@v1
+        with:
+          images: |
+            ${{ env.DOCKERHUB_SLUG }}
+            ${{ env.GHCR_SLUG }}
+          tag-semver: |
+            {{version}}
+          tag-edge: true
+          label-custom: |
+            org.opencontainers.image.title=gosu
+            org.opencontainers.image.description=Simple Go-based setuid+setgid+setgroups+exec
+      -
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      -
+        name: Login to DockerHub
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      -
+        name: Login to GHCR
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ secrets.GHCR_USERNAME }}
+          password: ${{ secrets.GHCR_TOKEN }}
+      -
+        name: Build artifacts
+        uses: docker/bake-action@v1
+        with:
+          targets: artifact-all
+      -
+        name: Move artifacts
+        run: |
+          mv ./dist/**/* ./dist/
+      -
+        name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: gosu
+          path: ./dist/*
+          if-no-files-found: error
+      -
+        name: Build
+        uses: docker/bake-action@v1
+        with:
+          files: |
+            ./docker-bake.hcl
+            ${{ steps.docker_meta.outputs.bake-file }}
+          targets: image-all
+          push: ${{ github.event_name != 'pull_request' }}
+      -
+        name: GitHub Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          draft: true
+          files: |
+            dist/*.tar.gz
+            dist/*.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      -
+        name: Check manifest
+        if: github.event_name != 'pull_request'
+        run: |
+          docker buildx imagetools inspect ${{ env.DOCKERHUB_SLUG }}:${{ steps.docker_meta.outputs.version }}
+          docker buildx imagetools inspect ${{ env.GHCR_SLUG }}:${{ steps.docker_meta.outputs.version }}
+      -
+        name: Inspect image
+        if: github.event_name != 'pull_request'
+        run: |
+          docker pull ${{ env.DOCKERHUB_SLUG }}:${{ steps.docker_meta.outputs.version }}
+          docker image inspect ${{ env.DOCKERHUB_SLUG }}:${{ steps.docker_meta.outputs.version }}
+          docker pull ${{ env.GHCR_SLUG }}:${{ steps.docker_meta.outputs.version }}
+          docker image inspect ${{ env.GHCR_SLUG }}:${{ steps.docker_meta.outputs.version }}
