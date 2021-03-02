@@ -77,9 +77,9 @@ Here is how to use `gosu` inside your Dockerfile:
 ```Dockerfile
 ARG GOSU_VERSION=1.13.0
 
+FROM tianon/gosu:${GOSU_VERSION} AS gosu
 FROM alpine
-ARG GOSU_VERSION
-COPY --from=tianon/gosu:${GOSU_VERSION} / /
+COPY --from=gosu / /
 RUN gosu --version
 RUN gosu nobody true
 ```
@@ -91,9 +91,9 @@ As the [Docker image](https://hub.docker.com/r/tianon/gosu/) is multi-platform w
 ```Dockerfile
 ARG GOSU_VERSION=1.13.0
 
+FROM --platform=${TARGETPLATFORM:-linux/amd64} tianon/gosu:${GOSU_VERSION}
 FROM --platform=${TARGETPLATFORM:-linux/amd64} alpine
-ARG GOSU_VERSION
-COPY --from=tianon/gosu:${GOSU_VERSION} / /
+COPY --from=gosu / /
 RUN gosu --version
 RUN gosu nobody true
 ```
