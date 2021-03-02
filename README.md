@@ -1,6 +1,11 @@
 # gosu
 
-[![CI Status](https://github.com/crazy-max/gosu/workflows/ci/badge.svg)](https://github.com/crazy-max/gosu/actions?query=workflow%3Abuild)
+[![GitHub release](https://img.shields.io/github/release/crazy-max/gosu.svg?style=flat-square)](https://github.com/crazy-max/gosu/releases/latest)
+[![Total downloads](https://img.shields.io/github/downloads/crazy-max/gosu/total.svg?style=flat-square)](https://github.com/crazy-max/gosu/releases/latest)
+[![Build Status](https://img.shields.io/github/workflow/status/crazy-max/gosu/build?label=build&logo=github&style=flat-square)](https://github.com/crazy-max/gosu/actions?query=workflow%3Abuild)
+[![Docker Stars](https://img.shields.io/docker/stars/crazymax/gosu.svg?style=flat-square&logo=docker)](https://hub.docker.com/r/crazymax/gosu/)
+[![Docker Pulls](https://img.shields.io/docker/pulls/crazymax/gosu.svg?style=flat-square&logo=docker)](https://hub.docker.com/r/crazymax/gosu/)
+[![Go Report Card](https://goreportcard.com/badge/github.com/crazy-max/gosu)](https://goreportcard.com/report/github.com/crazy-max/gosu)
 
 This is a simple tool grown out of the simple fact that `su` and `sudo` have very strange and often annoying TTY and signal-forwarding behavior.  They're also somewhat complex to setup and use (especially in the case of `sudo`), which allows for a great deal of expressivity, but falls flat if all you need is "run this specific application as this specific user and get out of the pipeline".
 
