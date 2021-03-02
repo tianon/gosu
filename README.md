@@ -12,6 +12,7 @@ ___
 * [Installation](#installation)
   * [From binary](#from-binary)
   * [From Dockerfile](#from-dockerfile)
+* [Build](#build)
 * [Why?](#why)
 * [Alternatives](#alternatives)
   * [`su-exec`](#su-exec)
@@ -88,6 +89,30 @@ ARG GOSU_VERSION
 COPY --from=crazymax/gosu:${GOSU_VERSION} / /
 RUN gosu --version
 RUN gosu nobody true
+```
+
+## Build
+
+You only need Docker to build `gosu`:
+
+```shell
+git clone https://github.com/crazy-max/gosu.git gosu
+cd gosu
+
+# validate (lint, vendors)
+docker buildx bake validate
+
+# test (test-alpine and test-debian bake targets)
+docker buildx bake test
+
+# build docker image and output to docker with gosu:local tag (default)
+docker buildx bake
+
+# build multi-platform image
+docker buildx bake image-all
+
+# create artifacts in ./dist
+docker buildx bake artifact-all
 ```
 
 ## Why?

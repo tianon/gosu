@@ -16,7 +16,7 @@ target "go-version" {
 
 // Special target: https://github.com/crazy-max/ghaction-docker-meta#bake-definition
 target "ghaction-docker-meta" {
-  tags = ["crazymax/gosu:local"]
+  tags = ["gosu:local"]
 }
 
 group "default" {
