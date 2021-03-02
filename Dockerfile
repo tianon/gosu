@@ -1,63 +1,33 @@
-FROM golang:1.14-alpine3.12
+# syntax=docker/dockerfile:1.2
+ARG GO_VERSION=1.14
+ARG GORELEASER_VERSION=0.157.0
 
-RUN apk add --no-cache file
+FROM --platform=$BUILDPLATFORM golang:${GO_VERSION}-alpine AS base
+ARG GORELEASER_VERSION
+RUN apk add --no-cache ca-certificates curl gcc file git linux-headers musl-dev tar
+RUN wget -qO- https://github.com/goreleaser/goreleaser/releases/download/v${GORELEASER_VERSION}/goreleaser_Linux_x86_64.tar.gz | tar -zxvf - goreleaser \
+  && mv goreleaser /usr/local/bin/goreleaser
+WORKDIR /src
 
-# disable CGO for ALL THE THINGS (to help ensure no libc)
-ENV CGO_ENABLED 0
+FROM base AS gomod
+RUN --mount=type=bind,target=.,rw \
+  --mount=type=cache,target=/go/pkg/mod \
+  go mod tidy && go mod download
 
-WORKDIR /go/src/github.com/tianon/gosu
+FROM gomod AS build
+ARG TARGETPLATFORM
+ARG TARGETOS
+ARG TARGETARCH
+ARG TARGETVARIANT
+ARG GIT_REF
+RUN --mount=type=bind,target=/src,rw \
+  --mount=type=cache,target=/root/.cache/go-build \
+  --mount=target=/go/pkg/mod,type=cache \
+  ./hack/goreleaser.sh "gosu" "/out"
 
-COPY go.mod go.sum ./
-RUN set -eux; \
-	go mod download; \
-	go mod verify
+FROM scratch AS artifacts
+COPY --from=build /out/*.tar.gz /
+COPY --from=build /out/*.zip /
 
-ENV BUILD_FLAGS="-v -ldflags '-d -s -w'"
-
-COPY *.go ./
-
-# gosu-$(dpkg --print-architecture)
-RUN set -eux; \
-	eval "GOARCH=amd64 go build $BUILD_FLAGS -o /go/bin/gosu-amd64"; \
-	file /go/bin/gosu-amd64; \
-	/go/bin/gosu-amd64 --version; \
-	/go/bin/gosu-amd64 nobody id; \
-	/go/bin/gosu-amd64 nobody ls -l /proc/self/fd
-
-RUN set -eux; \
-	eval "GOARCH=386 go build $BUILD_FLAGS -o /go/bin/gosu-i386"; \
-	file /go/bin/gosu-i386; \
-	/go/bin/gosu-i386 --version; \
-	/go/bin/gosu-i386 nobody id; \
-	/go/bin/gosu-i386 nobody ls -l /proc/self/fd
-
-RUN set -eux; \
-	eval "GOARCH=arm GOARM=5 go build $BUILD_FLAGS -o /go/bin/gosu-armel"; \
-	file /go/bin/gosu-armel
-
-RUN set -eux; \
-	eval "GOARCH=arm GOARM=6 go build $BUILD_FLAGS -o /go/bin/gosu-armhf"; \
-	file /go/bin/gosu-armhf
-
-# boo Raspberry Pi, making life hard (armhf-is-v7 vs armhf-is-v6 ...)
-#RUN set -eux; \
-#	eval "GOARCH=arm GOARM=7 go build $BUILD_FLAGS -o /go/bin/gosu-armhf"; \
-#	file /go/bin/gosu-armhf
-
-RUN set -eux; \
-	eval "GOARCH=arm64 go build $BUILD_FLAGS -o /go/bin/gosu-arm64"; \
-	file /go/bin/gosu-arm64
-
-RUN set -eux; \
-	eval "GOARCH=mips64le go build $BUILD_FLAGS -o /go/bin/gosu-mips64el"; \
-	file /go/bin/gosu-mips64el
-
-RUN set -eux; \
-	eval "GOARCH=ppc64le go build $BUILD_FLAGS -o /go/bin/gosu-ppc64el"; \
-	file /go/bin/gosu-ppc64el
-
-RUN set -eux; \
-	eval "GOARCH=s390x go build $BUILD_FLAGS -o /go/bin/gosu-s390x"; \
-	file /go/bin/gosu-s390x
-
-RUN set -eux; ls -lAFh /go/bin/gosu-*; file /go/bin/gosu-*
+FROM scratch
+COPY --from=build /usr/local/bin/gosu /

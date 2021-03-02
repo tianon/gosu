@@ -1,4 +1,4 @@
-package main // import "github.com/tianon/gosu"
+package main
 
 import (
 	"bytes"
