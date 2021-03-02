@@ -54,4 +54,4 @@ RUN --mount=type=bind,target=/src \
   ./hack/test.sh
 
 FROM scratch
-COPY --from=build /usr/local/bin/gosu /
+COPY --from=build /usr/local/bin/gosu /usr/local/bin/gosu

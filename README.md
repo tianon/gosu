@@ -1,5 +1,3 @@
-# gosu
-
 [![GitHub release](https://img.shields.io/github/release/crazy-max/gosu.svg?style=flat-square)](https://github.com/crazy-max/gosu/releases/latest)
 [![Total downloads](https://img.shields.io/github/downloads/crazy-max/gosu/total.svg?style=flat-square)](https://github.com/crazy-max/gosu/releases/latest)
 [![Build Status](https://img.shields.io/github/workflow/status/crazy-max/gosu/build?label=build&logo=github&style=flat-square)](https://github.com/crazy-max/gosu/actions?query=workflow%3Abuild)
@@ -7,11 +5,31 @@
 [![Docker Pulls](https://img.shields.io/docker/pulls/crazymax/gosu.svg?style=flat-square&logo=docker)](https://hub.docker.com/r/crazymax/gosu/)
 [![Go Report Card](https://goreportcard.com/badge/github.com/crazy-max/gosu)](https://goreportcard.com/report/github.com/crazy-max/gosu)
 
-This is a simple tool grown out of the simple fact that `su` and `sudo` have very strange and often annoying TTY and signal-forwarding behavior.  They're also somewhat complex to setup and use (especially in the case of `sudo`), which allows for a great deal of expressivity, but falls flat if all you need is "run this specific application as this specific user and get out of the pipeline".
+___
 
-The core of how `gosu` works is stolen directly from how Docker/libcontainer itself starts an application inside a container (and in fact, is using the `/etc/passwd` processing code directly from libcontainer's codebase).
+* [About](#about)
+* [Warning](#warning)
+* [Installation](#installation)
+  * [From binary](#from-binary)
+  * [From Dockerfile](#from-dockerfile)
+* [Why?](#why)
+* [Alternatives](#alternatives)
+  * [`su-exec`](#su-exec)
+  * [`chroot`](#chroot)
+  * [`setpriv`](#setpriv)
+  * [Others](#others)
 
-```console
+# About
+
+This is a simple tool grown out of the simple fact that `su` and `sudo` have very strange and often annoying TTY and
+signal-forwarding behavior.  They're also somewhat complex to setup and use (especially in the case of `sudo`), which
+allows for a great deal of expressivity, but falls flat if all you need is "run this specific application as this
+specific user and get out of the pipeline".
+
+The core of how `gosu` works is stolen directly from how Docker/libcontainer itself starts an application inside a
+container (and in fact, is using the `/etc/passwd` processing code directly from libcontainer's codebase).
+
+```shell
 $ gosu
 Usage: ./gosu user-spec command [args]
    eg: ./gosu tianon bash
@@ -21,29 +39,60 @@ Usage: ./gosu user-spec command [args]
 ./gosu version: 1.1 (go1.3.1 on linux/amd64; gc)
 ```
 
-Once the user/group is processed, we switch to that user, then we `exec` the specified process and `gosu` itself is no longer resident or involved in the process lifecycle at all.  This avoids all the issues of signal passing and TTY, and punts them to the process invoking `gosu` and the process being invoked by `gosu`, where they belong.
+Once the user/group is processed, we switch to that user, then we `exec` the specified process and `gosu` itself is no
+longer resident or involved in the process lifecycle at all.  This avoids all the issues of signal passing and TTY,
+and punts them to the process invoking `gosu` and the process being invoked by `gosu`, where they belong.
 
 ## Warning
 
-The core use case for `gosu` is to step _down_ from `root` to a non-privileged user during container startup (specifically in the `ENTRYPOINT`, usually).
+The core use case for `gosu` is to step _down_ from `root` to a non-privileged user during container startup
+(specifically in the `ENTRYPOINT`, usually).
 
-Uses of `gosu` beyond that could very well suffer from vulnerabilities such as CVE-2016-2779 (from which the Docker use case naturally shields us); see [`tianon/gosu#37`](https://github.com/tianon/gosu/issues/37) for some discussion around this point.
+Uses of `gosu` beyond that could very well suffer from vulnerabilities such as CVE-2016-2779 (from which the Docker
+use case naturally shields us); see [`tianon/gosu#37`](https://github.com/tianon/gosu/issues/37) for some discussion
+around this point.
 
 ## Installation
 
-High-level steps:
+### From binary
 
-1. download `gosu-$(dpkg --print-architecture | awk -F- '{ print $NF }')` as `gosu`
-2. download `gosu-$(dpkg --print-architecture | awk -F- '{ print $NF }').asc` as `gosu.asc`
-3. fetch my public key (to verify your download): `gpg --batch --keyserver hkps://keys.openpgp.org --recv-keys B42F6819007F00F88E364FD4036A9C25BF357DD4`
-4. `gpg --batch --verify gosu.asc gosu`
-5. `chmod +x gosu`
+`gosu` binaries are available on [releases page](https://github.com/crazy-max/gosu/releases/latest).
 
-For explicit `Dockerfile` instructions, see [`INSTALL.md`](INSTALL.md).
+Choose the archive matching the destination platform:
+
+```shell
+wget -qO- https://github.com/crazy-max/gosu/releases/download/v1.13.0/gosu_1.13.0_linux_x86_64.tar.gz | tar -zxvf - gosu
+```
+
+### From Dockerfile
+
+```Dockerfile
+ARG GOSU_VERSION=1.13.0
+
+FROM alpine
+ARG GOSU_VERSION
+COPY --from=crazymax/gosu:${GOSU_VERSION} / /
+RUN gosu --version
+RUN gosu nobody true
+```
+
+As the [Docker image](https://hub.docker.com/r/crazymax/gosu/) is multi-platform with
+[BuildKit](https://github.com/moby/buildkit) you can also use `gosu` through the
+[automatic platform ARGs in the global scope](https://docs.docker.com/engine/reference/builder/#automatic-platform-args-in-the-global-scope):
+
+```Dockerfile
+ARG GOSU_VERSION=1.13.0
+
+FROM --platform=${TARGETPLATFORM:-linux/amd64} alpine
+ARG GOSU_VERSION
+COPY --from=crazymax/gosu:${GOSU_VERSION} / /
+RUN gosu --version
+RUN gosu nobody true
+```
 
 ## Why?
 
-```console
+```shell
 $ docker run -it --rm ubuntu:trusty su -c 'exec ps aux'
 USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
 root         1  0.0  0.0  46636  2688 ?        Ss+  02:22   0:00 su -c exec ps a
@@ -57,23 +106,28 @@ USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
 root         1  0.0  0.0   7140   768 ?        Rs+  02:22   0:00 ps aux
 ```
 
-Additionally, due to the fact that `gosu` is using Docker's own code for processing these `user:group`, it has exact 1:1 parity with Docker's own `--user` flag.
+Additionally, due to the fact that `gosu` is using Docker's own code for processing these `user:group`, it has
+exact 1:1 parity with Docker's own `--user` flag.
 
-If you're curious about the edge cases that `gosu` handles, see [`Dockerfile.test`](Dockerfile.test) for the "test suite" (and the associated [`test.sh`](test.sh) script that wraps this up for testing arbitrary binaries).
+If you're curious about the edge cases that `gosu` handles, see [`Dockerfile.test`](Dockerfile.test) for the
+"test suite" (and the associated [`test.sh`](test.sh) script that wraps this up for testing arbitrary binaries).
 
-(Note that `sudo` has different goals from this project, and it is *not* intended to be a `sudo` replacement; for example, see [this Stack Overflow answer](https://stackoverflow.com/a/48105623) for a short explanation of why `sudo` does `fork`+`exec` instead of just `exec`.)
+(Note that `sudo` has different goals from this project, and it is *not* intended to be a `sudo` replacement;
+for example, see [this Stack Overflow answer](https://stackoverflow.com/a/48105623) for a short explanation of
+why `sudo` does `fork`+`exec` instead of just `exec`.)
 
 ## Alternatives
 
 ### `su-exec`
 
-As mentioned in `INSTALL.md`, [`su-exec`](https://github.com/ncopa/su-exec) is a very minimal re-write of `gosu` in C, making for a much smaller binary, and is available in the `main` Alpine package repository.
+As mentioned in `INSTALL.md`, [`su-exec`](https://github.com/ncopa/su-exec) is a very minimal re-write of `gosu` in C,
+making for a much smaller binary, and is available in the `main` Alpine package repository.
 
 ### `chroot`
 
 With the `--userspec` flag, `chroot` can provide similar benefits/behavior:
 
-```console
+```shell
 $ docker run -it --rm ubuntu:trusty chroot --userspec=nobody / ps aux
 USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
 nobody       1  5.0  0.0   7136   756 ?        Rs+  17:04   0:00 ps aux
@@ -83,7 +137,7 @@ nobody       1  5.0  0.0   7136   756 ?        Rs+  17:04   0:00 ps aux
 
 Available in newer `util-linux` (`>= 2.32.1-0.2`, in Debian; https://manpages.debian.org/buster/util-linux/setpriv.1.en.html):
 
-```console
+```shell
 $ docker run -it --rm buildpack-deps:buster-scm setpriv --reuid=nobody --regid=nogroup --init-groups ps faux
 USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
 nobody       1  5.0  0.0   9592  1252 pts/0    RNs+ 23:21   0:00 ps faux
@@ -93,4 +147,4 @@ nobody       1  5.0  0.0   9592  1252 pts/0    RNs+ 23:21   0:00 ps faux
 
 I'm not terribly familiar with them, but a few other alternatives I'm aware of include:
 
-- `chpst` (part of `runit`)
+* `chpst` (part of `runit`)
