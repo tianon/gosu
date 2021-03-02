@@ -46,6 +46,20 @@ target "vendor-update" {
   output = ["."]
 }
 
+group "test" {
+  targets = ["test-alpine", "test-debian"]
+}
+
+target "test-alpine" {
+  inherits = ["go-version"]
+  target = "test-alpine"
+}
+
+target "test-debian" {
+  inherits = ["go-version"]
+  target = "test-debian"
+}
+
 target "artifact" {
   args = {
     GIT_REF = GITHUB_REF
