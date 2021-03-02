@@ -1,3 +1,2 @@
-.git
-SHA256SUMS*
-gosu*
+/dist
+/.goreleaser.yml
