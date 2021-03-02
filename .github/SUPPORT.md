@@ -1,10 +1,10 @@
-# Support [![](https://isitmaintained.com/badge/resolution/crazy-max/gosu.svg)](https://isitmaintained.com/project/crazy-max/gosu)
+# Support [![](https://isitmaintained.com/badge/resolution/tianon/gosu.svg)](https://isitmaintained.com/project/tianon/gosu)
 
 First, [be a good guy](https://github.com/kossnocorp/etiquette/blob/master/README.md).
 
 ## Reporting an issue
 
-Please do a search in [open issues](https://github.com/crazy-max/gosu/issues?utf8=%E2%9C%93&q=) to see if the issue
+Please do a search in [open issues](https://github.com/tianon/gosu/issues?utf8=%E2%9C%93&q=) to see if the issue
 or feature request has already been filed.
 
 If you find your issue already exists, make relevant comments and add your
@@ -27,7 +27,7 @@ File a single issue per problem and feature request.
 The more information you can provide, the more likely someone will be successful reproducing the issue and finding
 a fix.
 
-You are now ready to [create a new issue](https://github.com/crazy-max/gosu/issues/new/choose)!
+You are now ready to [create a new issue](https://github.com/tianon/gosu/issues/new/choose)!
 
 ## Closure policy
 

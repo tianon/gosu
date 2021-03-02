@@ -15,8 +15,8 @@ on:
       - '**.md'
 
 env:
-  DOCKERHUB_SLUG: crazymax/gosu
-  GHCR_SLUG: ghcr.io/crazy-max/gosu
+  DOCKERHUB_SLUG: tianon/gosu
+  GHCR_SLUG: ghcr.io/tianon/gosu
 
 jobs:
   build:

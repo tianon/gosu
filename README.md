@@ -1,9 +1,9 @@
-[![GitHub release](https://img.shields.io/github/release/crazy-max/gosu.svg?style=flat-square)](https://github.com/crazy-max/gosu/releases/latest)
-[![Total downloads](https://img.shields.io/github/downloads/crazy-max/gosu/total.svg?style=flat-square)](https://github.com/crazy-max/gosu/releases/latest)
-[![Build Status](https://img.shields.io/github/workflow/status/crazy-max/gosu/build?label=build&logo=github&style=flat-square)](https://github.com/crazy-max/gosu/actions?query=workflow%3Abuild)
-[![Docker Stars](https://img.shields.io/docker/stars/crazymax/gosu.svg?style=flat-square&logo=docker)](https://hub.docker.com/r/crazymax/gosu/)
-[![Docker Pulls](https://img.shields.io/docker/pulls/crazymax/gosu.svg?style=flat-square&logo=docker)](https://hub.docker.com/r/crazymax/gosu/)
-[![Go Report Card](https://goreportcard.com/badge/github.com/crazy-max/gosu)](https://goreportcard.com/report/github.com/crazy-max/gosu)
+[![GitHub release](https://img.shields.io/github/release/tianon/gosu.svg?style=flat-square)](https://github.com/tianon/gosu/releases/latest)
+[![Total downloads](https://img.shields.io/github/downloads/tianon/gosu/total.svg?style=flat-square)](https://github.com/tianon/gosu/releases/latest)
+[![Build Status](https://img.shields.io/github/workflow/status/tianon/gosu/build?label=build&logo=github&style=flat-square)](https://github.com/tianon/gosu/actions?query=workflow%3Abuild)
+[![Docker Stars](https://img.shields.io/docker/stars/tianon/gosu.svg?style=flat-square&logo=docker)](https://hub.docker.com/r/tianon/gosu/)
+[![Docker Pulls](https://img.shields.io/docker/pulls/tianon/gosu.svg?style=flat-square&logo=docker)](https://hub.docker.com/r/tianon/gosu/)
+[![Go Report Card](https://goreportcard.com/badge/github.com/tianon/gosu)](https://goreportcard.com/report/github.com/tianon/gosu)
 
 ___
 
@@ -57,20 +57,20 @@ around this point.
 
 ### From binary
 
-`gosu` binaries are available on [releases page](https://github.com/crazy-max/gosu/releases/latest).
+`gosu` binaries are available on [releases page](https://github.com/tianon/gosu/releases/latest).
 
 Choose the archive matching the destination platform:
 
 ```shell
-wget -qO- https://github.com/crazy-max/gosu/releases/download/v1.13.0/gosu_1.13.0_linux_x86_64.tar.gz | tar -zxvf - gosu
+wget -qO- https://github.com/tianon/gosu/releases/download/v1.13.0/gosu_1.13.0_linux_x86_64.tar.gz | tar -zxvf - gosu
 ```
 
 ### From Dockerfile
 
 | Registry                                                                                         | Image                           |
 |--------------------------------------------------------------------------------------------------|---------------------------------|
-| [Docker Hub](https://hub.docker.com/r/crazymax/gosu/)                                            | `crazymax/gosu`                 |
-| [GitHub Container Registry](https://github.com/users/crazy-max/packages/container/package/gosu)  | `ghcr.io/crazy-max/gosu`        |
+| [Docker Hub](https://hub.docker.com/r/tianon/gosu/)                                              | `tianon/gosu`                   |
+| [GitHub Container Registry](https://github.com/users/tianon/packages/container/package/gosu)     | `ghcr.io/tianon/gosu`           |
 
 Here is how to use `gosu` inside your Dockerfile:
 
@@ -79,12 +79,12 @@ ARG GOSU_VERSION=1.13.0
 
 FROM alpine
 ARG GOSU_VERSION
-COPY --from=crazymax/gosu:${GOSU_VERSION} / /
+COPY --from=tianon/gosu:${GOSU_VERSION} / /
 RUN gosu --version
 RUN gosu nobody true
 ```
 
-As the [Docker image](https://hub.docker.com/r/crazymax/gosu/) is multi-platform with
+As the [Docker image](https://hub.docker.com/r/tianon/gosu/) is multi-platform with
 [BuildKit](https://github.com/moby/buildkit) you can also use `gosu` through the
 [automatic platform ARGs in the global scope](https://docs.docker.com/engine/reference/builder/#automatic-platform-args-in-the-global-scope):
 
@@ -93,7 +93,7 @@ ARG GOSU_VERSION=1.13.0
 
 FROM --platform=${TARGETPLATFORM:-linux/amd64} alpine
 ARG GOSU_VERSION
-COPY --from=crazymax/gosu:${GOSU_VERSION} / /
+COPY --from=tianon/gosu:${GOSU_VERSION} / /
 RUN gosu --version
 RUN gosu nobody true
 ```
@@ -103,7 +103,7 @@ RUN gosu nobody true
 You only need Docker to build `gosu`:
 
 ```shell
-git clone https://github.com/crazy-max/gosu.git gosu
+git clone https://github.com/tianon/gosu.git gosu
 cd gosu
 
 # validate (lint, vendors)
