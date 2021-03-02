@@ -67,6 +67,13 @@ wget -qO- https://github.com/crazy-max/gosu/releases/download/v1.13.0/gosu_1.13.
 
 ### From Dockerfile
 
+| Registry                                                                                         | Image                           |
+|--------------------------------------------------------------------------------------------------|---------------------------------|
+| [Docker Hub](https://hub.docker.com/r/crazymax/gosu/)                                            | `crazymax/gosu`                 |
+| [GitHub Container Registry](https://github.com/users/crazy-max/packages/container/package/gosu)  | `ghcr.io/crazy-max/gosu`        |
+
+Here is how to use `gosu` inside your Dockerfile:
+
 ```Dockerfile
 ARG GOSU_VERSION=1.13.0
 
