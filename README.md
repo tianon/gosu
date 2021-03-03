@@ -72,6 +72,22 @@ wget -qO- https://github.com/tianon/gosu/releases/download/v1.13.0/gosu_1.13.0_l
 | [Docker Hub](https://hub.docker.com/r/tianon/gosu/)                                              | `tianon/gosu`                   |
 | [GitHub Container Registry](https://github.com/users/tianon/packages/container/package/gosu)     | `ghcr.io/tianon/gosu`           |
 
+Following platforms for this image are available:
+
+```
+$ docker run --rm mplatform/mquery tianon/gosu:latest
+Image: crazymax/alpine-s6:latest
+ * Manifest List: Yes
+ * Supported platforms:
+   - linux/amd64
+   - linux/arm/v6
+   - linux/arm/v7
+   - linux/arm64
+   - linux/386
+   - linux/ppc64le
+   - linux/s390x
+```
+
 Here is how to use `gosu` inside your Dockerfile:
 
 ```Dockerfile
@@ -79,20 +95,6 @@ ARG GOSU_VERSION=1.13.0
 
 FROM tianon/gosu:${GOSU_VERSION} AS gosu
 FROM alpine
-COPY --from=gosu / /
-RUN gosu --version
-RUN gosu nobody true
-```
-
-As the [Docker image](https://hub.docker.com/r/tianon/gosu/) is multi-platform with
-[BuildKit](https://github.com/moby/buildkit) you can also use `gosu` through the
-[automatic platform ARGs in the global scope](https://docs.docker.com/engine/reference/builder/#automatic-platform-args-in-the-global-scope):
-
-```Dockerfile
-ARG GOSU_VERSION=1.13.0
-
-FROM --platform=${TARGETPLATFORM:-linux/amd64} tianon/gosu:${GOSU_VERSION} AS gosu
-FROM --platform=${TARGETPLATFORM:-linux/amd64} alpine
 COPY --from=gosu / /
 RUN gosu --version
 RUN gosu nobody true
