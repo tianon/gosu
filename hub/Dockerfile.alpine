@@ -1,0 +1,21 @@
+FROM alpine:3.13
+
+# https://github.com/tianon/gosu/releases
+ENV GOSU_VERSION 1.12
+
+RUN set -eux; \
+	apk add --no-cache --virtual .fetch-deps dpkg gnupg; \
+	dpkgArch="$(dpkg --print-architecture | awk -F- '{ print $NF }')"; \
+	wget -O /usr/local/bin/gosu.asc "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$dpkgArch.asc"; \
+	wget -O /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$dpkgArch"; \
+	GNUPGHOME="$(mktemp -d)"; export GNUPGHOME; \
+	gpg --batch --keyserver hkps://keys.openpgp.org --recv-keys B42F6819007F00F88E364FD4036A9C25BF357DD4; \
+	gpg --batch --verify /usr/local/bin/gosu.asc /usr/local/bin/gosu; \
+	gpgconf --kill all; \
+	rm -rf "$GNUPGHOME"; unset GNUPGHOME; \
+	apk del --no-network .fetch-deps; \
+	chmod +x /usr/local/bin/gosu; \
+	gosu --version; \
+	gosu nobody true; \
+# hard link to / for ease of COPY --from
+	ln -v /usr/local/bin/gosu /

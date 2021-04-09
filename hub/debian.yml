@@ -1,0 +1,10 @@
+image: tianon/gosu:debian
+manifests:
+  - { image: tianon/gosu:debian-amd64, platform: { os: linux, architecture: amd64 } }
+  - { image: tianon/gosu:debian-arm32v5, platform: { os: linux, architecture: arm, variant: v5 } }
+  - { image: tianon/gosu:debian-arm32v7, platform: { os: linux, architecture: arm, variant: v7 } }
+  - { image: tianon/gosu:debian-arm64v8, platform: { os: linux, architecture: arm64, variant: v8 } }
+  - { image: tianon/gosu:debian-i386, platform: { os: linux, architecture: 386 } }
+  - { image: tianon/gosu:debian-mips64le, platform: { os: linux, architecture: mips64le } }
+  - { image: tianon/gosu:debian-ppc64le, platform: { os: linux, architecture: ppc64le } }
+  - { image: tianon/gosu:debian-s390x, platform: { os: linux, architecture: s390x } }

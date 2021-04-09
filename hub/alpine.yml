@@ -1,0 +1,9 @@
+image: tianon/gosu:alpine
+manifests:
+  - { image: tianon/gosu:alpine-amd64, platform: { os: linux, architecture: amd64 } }
+  - { image: tianon/gosu:alpine-arm32v6, platform: { os: linux, architecture: arm, variant: v6 } }
+  - { image: tianon/gosu:alpine-arm32v7, platform: { os: linux, architecture: arm, variant: v7 } }
+  - { image: tianon/gosu:alpine-arm64v8, platform: { os: linux, architecture: arm64, variant: v8 } }
+  - { image: tianon/gosu:alpine-i386, platform: { os: linux, architecture: 386 } }
+  - { image: tianon/gosu:alpine-ppc64le, platform: { os: linux, architecture: ppc64le } }
+  - { image: tianon/gosu:alpine-s390x, platform: { os: linux, architecture: s390x } }
