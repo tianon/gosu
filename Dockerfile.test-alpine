@@ -1,4 +1,4 @@
-FROM alpine:3.12
+FROM alpine:3.13
 
 # add "nobody" to ALL groups (makes testing edge cases more interesting)
 RUN cut -d: -f1 /etc/group | xargs -n1 addgroup nobody
