@@ -1,7 +1,5 @@
 # gosu
 
-[![Build Status](https://travis-ci.org/tianon/gosu.svg)](https://travis-ci.org/tianon/gosu)
-
 This is a simple tool grown out of the simple fact that `su` and `sudo` have very strange and often annoying TTY and signal-forwarding behavior.  They're also somewhat complex to setup and use (especially in the case of `sudo`), which allows for a great deal of expressivity, but falls flat if all you need is "run this specific application as this specific user and get out of the pipeline".
 
 The core of how `gosu` works is stolen directly from how Docker/libcontainer itself starts an application inside a container (and in fact, is using the `/etc/passwd` processing code directly from libcontainer's codebase).
