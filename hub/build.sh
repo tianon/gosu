@@ -49,7 +49,8 @@ cat > latest.yml <<-'EOYAML'
 	image: tianon/gosu:latest
 	manifests:
 EOYAML
-for arch in "${!latest[@]}"; do
+mapfile -d '' sorted < <(printf '%s\0' "${!latest[@]}" | sort -z)
+for arch in "${sorted[@]}"; do
 	variant="${latest[$arch]}"
 	docker tag "tianon/gosu:$variant-$arch" "tianon/gosu:$arch"
 	platform="$(_platformToOCI "${platforms[$arch]}")"
