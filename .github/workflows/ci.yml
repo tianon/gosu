@@ -19,3 +19,5 @@ jobs:
       - run: ./test.sh gosu-i386
       - run: ./test.sh --debian gosu-amd64
       - run: ./test.sh --debian gosu-i386
+      - run: docker build --pull --file hub/Dockerfile.alpine hub
+      - run: docker build --pull --file hub/Dockerfile.debian hub
