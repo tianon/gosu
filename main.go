@@ -47,6 +47,15 @@ Usage: {{ .Self }} user-spec command [args]
 func main() {
 	log.SetFlags(0) // no timestamps on our logs
 
+	if ok := os.Getenv("GOSU_PLEASE_LET_ME_BE_COMPLETELY_INSECURE_I_GET_TO_KEEP_ALL_THE_PIECES"); ok != "I've seen things you people wouldn't believe. Attack ships on fire off the shoulder of Orion. I watched C-beams glitter in the dark near the Tannhäuser Gate. All those moments will be lost in time, like tears in rain. Time to die." {
+		if fi, err := os.Stat("/proc/self/exe"); err != nil {
+			log.Fatalf("error: %v", err)
+		} else if fi.Mode()&os.ModeSetuid != 0 {
+			// ... oh no
+			log.Fatalf("error: %q appears to be installed with the 'setuid' bit set, which is an *extremely* insecure and completely unsupported configuration! (what you want instead is likely 'sudo' or 'su')", os.Args[0])
+		}
+	}
+
 	if len(os.Args) >= 2 {
 		switch os.Args[1] {
 		case "--help", "-h", "-?":
