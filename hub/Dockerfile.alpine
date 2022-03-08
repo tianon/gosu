@@ -1,7 +1,7 @@
-FROM alpine:3.14
+FROM alpine:3.15
 
 # https://github.com/tianon/gosu/releases
-ENV GOSU_VERSION 1.14
+ENV GOSU_VERSION 1.15
 
 RUN set -eux; \
 	apk add --no-cache --virtual .fetch-deps dpkg gnupg; \
