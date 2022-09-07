@@ -1,4 +1,4 @@
-FROM alpine:3.15
+FROM alpine:3.16
 
 # https://github.com/tianon/gosu/releases
 ENV GOSU_VERSION 1.14
