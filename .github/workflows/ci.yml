@@ -3,6 +3,8 @@ name: CI
 on:
   pull_request:
   push:
+  schedule:
+    - cron: 0 0 * * 0
 
 defaults:
   run:
@@ -13,7 +15,7 @@ jobs:
     name: Test
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - run: ./build.sh
       - run: ./test.sh gosu-amd64
       - run: ./test.sh gosu-i386
@@ -21,3 +23,13 @@ jobs:
       - run: ./test.sh --debian gosu-i386
       - run: docker build --pull --file hub/Dockerfile.alpine hub
       - run: docker build --pull --file hub/Dockerfile.debian hub
+
+      - uses: actions/setup-go@v3
+        with:
+          go-version: 1.18
+      # https://github.com/golang/vuln/commits/master
+      # https://github.com/golang/vuln/releases
+      - run: go install golang.org/x/vuln/cmd/govulncheck@9bf256343acc20d22586789d07aecf887d8a5aea
+      # (update "go-version" above when updating this version)
+
+      - run: for gosu in gosu-*; do govulncheck "$gosu"; done
