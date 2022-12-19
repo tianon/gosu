@@ -1,4 +1,4 @@
-FROM golang:1.19-alpine3.16
+FROM golang:1.18.2-alpine3.14
 
 RUN apk add --no-cache file
 
@@ -12,7 +12,8 @@ RUN set -eux; \
 	go mod download; \
 	go mod verify
 
-ENV BUILD_FLAGS="-v -ldflags '-d -s -w'"
+# note: we cannot add "-s" here because then "govulncheck" does not work (see SECURITY.md); the ~0.2MiB increase (as of 2022-12-16, Go 1.18) is worth it
+ENV BUILD_FLAGS="-v -ldflags '-d -w'"
 
 COPY *.go ./
 
