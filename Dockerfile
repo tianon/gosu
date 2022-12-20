@@ -5,8 +5,14 @@ RUN set -eux; \
 	apt-get install -y --no-install-recommends \
 		arch-test \
 		file \
+		patch \
 	; \
 	rm -rf /var/lib/apt/lists/*
+
+# https://github.com/golang/go/issues/56426
+RUN set -eux; \
+	wget -O /tmp/go-mips.patch 'https://github.com/golang/go/commit/2c7c98c3ad719aa9d6d2594827a6894ff9950042.patch'; \
+	patch --strip=1 --directory=/usr/local/go --input=/tmp/go-mips.patch
 
 # note: we cannot add "-s" here because then "govulncheck" does not work (see SECURITY.md); the ~0.2MiB increase (as of 2022-12-16, Go 1.18) is worth it
 ENV BUILD_FLAGS="-v -ldflags '-d -w'"
