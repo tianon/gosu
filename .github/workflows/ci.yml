@@ -30,7 +30,7 @@ jobs:
           go-version: 1.18
       # https://github.com/golang/vuln/commits/master
       # https://github.com/golang/vuln/releases
-      - run: go install golang.org/x/vuln/cmd/govulncheck@a42f9910daf3ee8f4a813ce33e16b4470a93faee
+      - run: go install golang.org/x/vuln/cmd/govulncheck@d3666e3e8dbbcb0748a371d2ff17f4da36a158f4
       # (update "go-version" above when updating this version)
 
-      - run: for gosu in gosu-*; do govulncheck "$gosu"; done
+      - run: for gosu in gosu-*; do govulncheck -mode=binary "$gosu"; done
