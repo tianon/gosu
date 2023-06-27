@@ -53,6 +53,9 @@ func main() {
 		} else if fi.Mode()&os.ModeSetuid != 0 {
 			// ... oh no
 			log.Fatalf("error: %q appears to be installed with the 'setuid' bit set, which is an *extremely* insecure and completely unsupported configuration! (what you want instead is likely 'sudo' or 'su')", os.Args[0])
+		} else if fi.Mode()&os.ModeSetgid != 0 {
+			// ... oh no
+			log.Fatalf("error: %q appears to be installed with the 'setgid' bit set, which is not quite *as* insecure as 'setuid', but still not great, and definitely a completely unsupported configuration! (what you want instead is likely 'sudo' or 'su')", os.Args[0])
 		}
 	}
 

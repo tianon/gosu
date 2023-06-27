@@ -2,9 +2,11 @@
 
 This project does not rebuild/release to "fix" CVEs which do not apply to actual builds of `gosu`.  For example, this includes any CVE in Go which applies to interfaces that `gosu` does not ever invoke, such as `net/http`, `archive/tar`, `encoding/xml`, etc.
 
-Before reporting that `gosu` is "vulnerable" to a particular CVE, please run [`govulncheck`](https://pkg.go.dev/golang.org/x/vuln/cmd/govulncheck) to determine whether the latest release is *actually* using the vulnerable functionality.  See [this excellent blog post](https://go.dev/blog/vuln) from the Go team for more information about the `govulncheck` tool and the methodology by which it is maintained.
+Before reporting that `gosu` is "vulnerable" to a particular CVE, please run our [`./govulncheck-with-excludes.sh`](govulncheck-with-excludes.sh) wrapper around [`govulncheck`](https://pkg.go.dev/golang.org/x/vuln/cmd/govulncheck) to determine whether the latest release is *actually* using the vulnerable functionality.  See [this excellent blog post](https://go.dev/blog/vuln) from the Go team for more information about the `govulncheck` tool and the methodology by which it is maintained.
 
 If you have a tool which is reporting that `gosu` is vulnerable to a particular CVE but `govulncheck` does not agree, **please** report this as a false positive to your CVE scanning vendor so that they can improve their tooling.  (If you wish to verify that your reported CVE is part of `govulncheck`'s dataset and thus covered by their tool, you can check [the vulndb repository](https://github.com/golang/vulndb) where they track those.)
+
+Our wrapper script ([`govulncheck-with-excludes.sh`](govulncheck-with-excludes.sh)) includes a very small set of vulnerabilities that will be reported by `govulncheck` which do not apply (due to other mitigations or otherwise).
 
 # Reporting Vulnerabilities
 
