@@ -44,7 +44,7 @@ fi
 
 json="$(govulncheck -json "$@")"
 
-vulns="$(jq <<<"$json" -cs 'map(select(has("vulnerability")) | .vulnerability.osv)')"
+vulns="$(jq <<<"$json" -cs 'map(select(has("osv")) | .osv)')"
 if [ "$(jq <<<"$vulns" -r 'length')" -le 0 ]; then
 	printf '%s\n' "$out"
 	exit 1
