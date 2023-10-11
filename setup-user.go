@@ -3,7 +3,7 @@ package main
 import (
 	"os"
 
-	"github.com/opencontainers/runc/libcontainer/user"
+	"github.com/moby/sys/user"
 	"golang.org/x/sys/unix"
 )
 
