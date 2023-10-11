@@ -2,9 +2,9 @@ package main
 
 import (
 	"os"
-	"syscall"
 
 	"github.com/opencontainers/runc/libcontainer/user"
+	"golang.org/x/sys/unix"
 )
 
 // this function comes from libcontainer/init_linux.go
@@ -15,8 +15,8 @@ import (
 func SetupUser(u string) error {
 	// Set up defaults.
 	defaultExecUser := user.ExecUser{
-		Uid:  syscall.Getuid(),
-		Gid:  syscall.Getgid(),
+		Uid:  unix.Getuid(),
+		Gid:  unix.Getgid(),
 		Home: "/",
 	}
 	passwdPath, err := user.GetPasswdPath()
@@ -31,13 +31,13 @@ func SetupUser(u string) error {
 	if err != nil {
 		return err
 	}
-	if err := syscall.Setgroups(execUser.Sgids); err != nil {
+	if err := unix.Setgroups(execUser.Sgids); err != nil {
 		return err
 	}
-	if err := syscall.Setgid(execUser.Gid); err != nil {
+	if err := unix.Setgid(execUser.Gid); err != nil {
 		return err
 	}
-	if err := syscall.Setuid(execUser.Uid); err != nil {
+	if err := unix.Setuid(execUser.Uid); err != nil {
 		return err
 	}
 	// if we didn't get HOME already, set it based on the user's HOME
