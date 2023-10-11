@@ -4,7 +4,6 @@ import (
 	"os"
 	"syscall"
 
-	"github.com/opencontainers/runc/libcontainer/system"
 	"github.com/opencontainers/runc/libcontainer/user"
 )
 
@@ -35,10 +34,10 @@ func SetupUser(u string) error {
 	if err := syscall.Setgroups(execUser.Sgids); err != nil {
 		return err
 	}
-	if err := system.Setgid(execUser.Gid); err != nil {
+	if err := syscall.Setgid(execUser.Gid); err != nil {
 		return err
 	}
-	if err := system.Setuid(execUser.Uid); err != nil {
+	if err := syscall.Setuid(execUser.Uid); err != nil {
 		return err
 	}
 	// if we didn't get HOME already, set it based on the user's HOME
