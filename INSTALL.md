@@ -18,7 +18,7 @@ RUN set -eux; \
 Newer `gosu` releases:
 
 ```dockerfile
-ENV GOSU_VERSION 1.16
+ENV GOSU_VERSION 1.17
 RUN set -eux; \
 # save list of currently installed packages for later so we can clean up
 	savedAptMark="$(apt-mark showmanual)"; \
@@ -53,7 +53,7 @@ RUN set -eux; \
 **Note:** when using Alpine, it's probably also worth checking out [`su-exec`](https://github.com/ncopa/su-exec) (`apk add --no-cache su-exec`) instead, which since version 0.2 is fully `gosu`-compatible in a fraction of the file size.
 
 ```dockerfile
-ENV GOSU_VERSION 1.16
+ENV GOSU_VERSION 1.17
 RUN set -eux; \
 	\
 	apk add --no-cache --virtual .gosu-deps \
