@@ -15,7 +15,7 @@ RUN set -eux; \
 	patch --strip=1 --directory=/usr/local/go --input=/tmp/go-mips.patch
 
 # note: we cannot add "-s" here because then "govulncheck" does not work (see SECURITY.md); the ~0.2MiB increase (as of 2022-12-16, Go 1.18) is worth it
-ENV BUILD_FLAGS="-v -ldflags '-d -w'"
+ENV BUILD_FLAGS="-v -trimpath -ldflags '-d -w'"
 
 RUN set -eux; \
 	{ \
