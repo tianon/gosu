@@ -1,7 +1,7 @@
-FROM debian:bullseye-slim
+FROM debian:bookworm-slim
 
 # add "nobody" to ALL groups (makes testing edge cases more interesting)
-RUN cut -d: -f1 /etc/group | xargs -n1 -I'{}' usermod -aG '{}' nobody
+RUN cut -d: -f1 /etc/group | xargs -rtI'{}' usermod -aG '{}' nobody
 # emulate Alpine's "games" user (which is part of the "users" group)
 RUN usermod -aG users games
 

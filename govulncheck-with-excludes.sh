@@ -6,9 +6,10 @@ set -Eeuo pipefail
 
 excludeVulns="$(jq -nc '[
 
+	# fixed in Go 1.20.5+
 	# https://pkg.go.dev/vuln/GO-2023-1840
 	# we already mitigate setuid in our code
-	"GO-2023-1840", "CVE-2023-29403",
+	#"GO-2023-1840", "CVE-2023-29403",
 	# (https://github.com/tianon/gosu/issues/128#issuecomment-1607803883)
 
 	empty # trailing comma hack (makes diffs smaller)
