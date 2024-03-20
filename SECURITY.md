@@ -8,9 +8,9 @@ If you have a tool which is reporting that `gosu` is vulnerable to a particular 
 
 Our `govulncheck` wrapper script ([`govulncheck-with-excludes.sh`](govulncheck-with-excludes.sh)) may include a small set of vulnerabilities that will be reported by `govulncheck` which do not apply (due to other mitigations or otherwise).  See comments in that script for details.
 
-## Go Version Updates
+## Version Updates
 
-Similar to the how traditional Linux distributions such as Debian handle rebuilding binaries between stable releases / for updated compilers (or rather, the situations and reasons for which they do *not* do so), and in the same spirit as the above CVE policy, we do *not* update the compiler/rebuild with a newer compiler unless there is a compelling functional or security reason in the code that ends up as part of the `gosu` binary that warrants doing so.
+Similar to the how traditional Linux distributions such as Debian handle rebuilding binaries between stable releases / for updated compilers (or rather, the situations and reasons for which they do *not* do so), and in the same spirit as the above CVE policy and [Go's "Minimal Version Selection"](https://research.swtch.com/vgo-mvs), we do *not* update the compiler/rebuild with a newer compiler unless there is a compelling functional or security reason in the code that ends up as part of the `gosu` binary that warrants doing so.
 
 As above, if you have a "security scanning" tool which does not agree with this policy, please take that up with your scanning tool vendor (report as a false positive, improve the tool to `govulncheck`, etc).
 
