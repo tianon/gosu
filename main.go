@@ -1,7 +1,6 @@
 package main // import "github.com/tianon/gosu"
 
 import (
-	"bytes"
 	"fmt"
 	"log"
 	"os"
@@ -10,7 +9,6 @@ import (
 	"runtime"
 	"strings"
 	"syscall"
-	"text/template"
 )
 
 func init() {
@@ -24,7 +22,7 @@ func version() string {
 }
 
 func usage() string {
-	t := template.Must(template.New("usage").Parse(`
+	t := `
 Usage: {{ .Self }} user-spec command [args]
    eg: {{ .Self }} tianon bash
        {{ .Self }} nobody:root bash -c 'whoami && id'
@@ -32,16 +30,10 @@ Usage: {{ .Self }} user-spec command [args]
 
 {{ .Self }} version: {{ .Version }}
 {{ .Self }} license: Apache-2.0 (full text at https://github.com/tianon/gosu)
-`))
-	var b bytes.Buffer
-	template.Must(t, t.Execute(&b, struct {
-		Self    string
-		Version string
-	}{
-		Self:    filepath.Base(os.Args[0]),
-		Version: version(),
-	}))
-	return strings.TrimSpace(b.String()) + "\n"
+`
+	t = strings.ReplaceAll(t, "{{ .Self }}", filepath.Base(os.Args[0]))
+	t = strings.ReplaceAll(t, "{{ .Version }}", version())
+	return t[1:]
 }
 
 func main() {
