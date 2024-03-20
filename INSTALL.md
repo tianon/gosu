@@ -81,3 +81,9 @@ RUN set -eux; \
 	gosu --version; \
 	gosu nobody true
 ```
+
+## Others / Lazy Method
+
+```dockerfile
+COPY --from=tianon/gosu /gosu /usr/local/bin/
+```
