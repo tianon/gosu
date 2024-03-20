@@ -6,12 +6,12 @@ Before reporting that `gosu` is "vulnerable" to a particular CVE, please run our
 
 If you have a tool which is reporting that `gosu` is vulnerable to a particular CVE but `govulncheck` does not agree, **please** report this as a false positive to your CVE scanning vendor so that they can improve their tooling.  (If you wish to verify that your reported CVE is part of `govulncheck`'s dataset and thus covered by their tool, you can check [the vulndb repository](https://github.com/golang/vulndb) where they track those.)
 
-Our wrapper script ([`govulncheck-with-excludes.sh`](govulncheck-with-excludes.sh)) includes a very small set of vulnerabilities that will be reported by `govulncheck` which do not apply (due to other mitigations or otherwise).
+Our `govulncheck` wrapper script ([`govulncheck-with-excludes.sh`](govulncheck-with-excludes.sh)) may include a small set of vulnerabilities that will be reported by `govulncheck` which do not apply (due to other mitigations or otherwise).  See comments in that script for details.
 
 # Reporting Vulnerabilities
 
-The surface area of `gosu` itself is really limited -- it only directly contains a small amount of Go code to instrument an interface that is part of [`runc`](https://github.com/opencontainers/runc) (and which itself is a pretty limited interface) for providing the same behavior as Docker's `--user` flag, but from within a running container.
+The surface area of `gosu` itself is really limited -- it only directly contains a small amount of Go code to instrument an interface that is part of [`github.com/moby/sys/user` (the Docker Engine's `--user` parsing code, to be exact)](https://github.com/moby/sys/tree/main/user) (and which itself is a pretty limited interface) intended for providing the same behavior as Docker's `--user` flag (switching from `root` to a less privileged user), but from within an already running container.
 
-If you believe you have found a new vulnerability in `gosu`, chances are very high that it's actually a vulnerability in `runc` (or at the very least, `runc`'s code), and should be [reported appropriately and responsibly](https://github.com/opencontainers/.github/blob/master/SECURITY.md).
+If you believe you have found a new vulnerability in `gosu`, chances are very high that it's actually a vulnerability in `github.com/moby/sys/user` or `golang.org/x/sys`, and should be [reported appropriately and responsibly](https://github.com/moby/moby/blob/HEAD/SECURITY.md).
 
 After all this, if you still believe you have discovered a novel vulnerability in the limited code that is `gosu` itself, please [use GitHub's (private) advisory reporting feature](https://github.com/tianon/gosu/security/advisories/new) to responsibly report it.
