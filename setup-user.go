@@ -7,9 +7,9 @@ import (
 	"golang.org/x/sys/unix"
 )
 
-// this function comes from libcontainer/init_linux.go
-// we don't use that directly because we don't want the whole namespaces package imported here
-// (also, because we need minor modifications and it's not even exported)
+// this function comes from https://github.com/opencontainers/runc/blob/18c313be729dd02b17934af41e32116a28b4b3bf/libcontainer/init_linux.go#L472-L561
+// we don't use that directly because it isn't exported *and* we don't want that whole package/runc imported here
+// (also, because we need minor modifications)
 
 // SetupUser changes the groups, gid, and uid for the user inside the container
 func SetupUser(u string) error {
