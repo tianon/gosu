@@ -1,7 +1,6 @@
 package main // import "github.com/tianon/gosu"
 
 import (
-	"io"
 	"os"
 	"os/exec"
 	"runtime"
@@ -34,7 +33,7 @@ Usage: ` + self + ` user-spec command [args]
 	return t[1:]
 }
 
-func exit(code int, w io.Writer, ss ...string) {
+func exit(code int, w *os.File, ss ...string) {
 	for i, s := range ss {
 		if i > 0 {
 			w.Write([]byte{' '})
