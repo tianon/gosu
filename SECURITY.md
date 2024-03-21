@@ -8,6 +8,12 @@ If you have a tool which is reporting that `gosu` is vulnerable to a particular 
 
 Our `govulncheck` wrapper script ([`govulncheck-with-excludes.sh`](govulncheck-with-excludes.sh)) may include a small set of vulnerabilities that will be reported by `govulncheck` which do not apply (due to other mitigations or otherwise).  See comments in that script for details.
 
+## Version Updates
+
+Similar to the how traditional Linux distributions such as Debian handle rebuilding binaries between stable releases / for updated compilers (or rather, the situations and reasons for which they do *not* do so), and in the same spirit as the above CVE policy and [Go's "Minimal Version Selection"](https://research.swtch.com/vgo-mvs), we do *not* update the compiler/rebuild with a newer compiler unless there is a compelling functional or security reason in the code that ends up as part of the `gosu` binary that warrants doing so.
+
+As above, if you have a "security scanning" tool which does not agree with this policy, please take that up with your scanning tool vendor (report as a false positive, improve the tool to `govulncheck`, etc).
+
 # Reporting Vulnerabilities
 
 The surface area of `gosu` itself is really limited -- it only directly contains a small amount of Go code to instrument an interface that is part of [`github.com/moby/sys/user` (the Docker Engine's `--user` parsing code, to be exact)](https://github.com/moby/sys/tree/main/user) (and which itself is a pretty limited interface) intended for providing the same behavior as Docker's `--user` flag (switching from `root` to a less privileged user), but from within an already running container.
