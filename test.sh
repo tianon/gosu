@@ -27,8 +27,8 @@ dir="$(mktemp -d -t gosu-test-XXXXXXXXXX)"
 base="$(basename "$dir")"
 img="gosu-test:$base"
 trap "rm -rf '$dir'" EXIT
-cp -T "$df" "$dir/Dockerfile"
-cp -T "$gosu" "$dir/gosu"
+cp  "$df" "$dir/Dockerfile"
+cp  "$gosu" "$dir/gosu"
 docker build -t "$img" "$dir"
 rm -rf "$dir"
 trap - EXIT
