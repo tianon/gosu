@@ -58,10 +58,6 @@ If you're curious about the edge cases that `gosu` handles, see [`Dockerfile.tes
 
 ## Alternatives
 
-### `su-exec`
-
-As mentioned in `INSTALL.md`, [`su-exec`](https://github.com/ncopa/su-exec) is a very minimal re-write of `gosu` in C, making for a much smaller binary, and is available in the `main` Alpine package repository.
-
 ### `chroot`
 
 With the `--userspec` flag, `chroot` can provide similar benefits/behavior:
@@ -81,6 +77,10 @@ $ docker run -it --rm buildpack-deps:buster-scm setpriv --reuid=nobody --regid=n
 USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
 nobody       1  5.0  0.0   9592  1252 pts/0    RNs+ 23:21   0:00 ps faux
 ```
+
+### `su-exec`
+
+In the Alpine Linux ecosystem, [`su-exec`](https://github.com/ncopa/su-exec) is a minimal re-write of `gosu` in C, making for a much smaller binary, and is available in the `main` Alpine package repository.  However, as of version 0.3 it has [a pretty severe parser bug](https://github.com/ncopa/su-exec/pull/26) that hasn't been in a release for many years (and which the buggy behavior is that typos lead to running code as root unexpectedly 😬).
 
 ### Others
 
