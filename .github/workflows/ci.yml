@@ -5,6 +5,7 @@ on:
   push:
   schedule:
     - cron: 0 0 * * 0
+  workflow_dispatch:
 
 defaults:
   run:
@@ -25,13 +26,8 @@ jobs:
       - run: docker build --pull --file hub/Dockerfile.alpine hub
       - run: docker build --pull --file hub/Dockerfile.debian hub
 
-      - uses: actions/setup-go@v4
-        with:
-          go-version: 1.18
-      # https://github.com/golang/vuln/commits/master
-      # https://github.com/golang/vuln/releases
-      # https://github.com/golang/vuln/tags
-      - run: go install golang.org/x/vuln/cmd/govulncheck@v1.0.4
-      # (update "go-version" above when updating this version; https://github.com/golang/vuln/blob/v1.0.1/go.mod#L3)
-
-      - run: for gosu in gosu-*; do ./govulncheck-with-excludes.sh -mode=binary "$gosu"; done
+      - name: govulncheck
+        run: |
+          for gosu in gosu-*; do
+            ./govulncheck-with-excludes.sh -mode=binary "$gosu"
+          done

@@ -9,7 +9,7 @@ excludeVulns="$(jq -nc '[
 	# fixed in Go 1.20.5+
 	# https://pkg.go.dev/vuln/GO-2023-1840
 	# we already mitigate setuid in our code
-	#"GO-2023-1840", "CVE-2023-29403",
+	"GO-2023-1840", "CVE-2023-29403",
 	# (https://github.com/tianon/gosu/issues/128#issuecomment-1607803883)
 
 	empty # trailing comma hack (makes diffs smaller)
@@ -30,7 +30,9 @@ if ! command -v govulncheck > /dev/null; then
 			--workdir /wd
 			"${GOLANG_IMAGE:-golang:latest}"
 			sh -euc '
-				go install golang.org/x/vuln/cmd/govulncheck@latest > /dev/null
+				# https://github.com/golang/vuln/releases
+				# (pinning version to avoid format changes like https://github.com/tianon/gosu/issues/144 surprising us unexpectedly)
+				go install golang.org/x/vuln/cmd/govulncheck@v1.1.2 > /dev/null
 				exec "$GOPATH/bin/govulncheck" "$@"
 			' --
 		)
@@ -45,7 +47,24 @@ fi
 
 json="$(govulncheck -json "$@")"
 
-vulns="$(jq <<<"$json" -cs 'map(select(has("osv")) | .osv)')"
+vulns="$(jq <<<"$json" -cs '
+	(
+		map(
+			.osv // empty
+			| { key: .id, value: . }
+		)
+		| from_entries
+	) as $meta
+	# https://github.com/tianon/gosu/issues/144
+	| map(
+		.finding // empty
+		# https://github.com/golang/vuln/blob/3740f5cb12a3f93b18dbe200c4bcb6256f8586e2/internal/scan/template.go#L97-L104
+		| select((.trace[0].function // "") != "")
+		| .osv
+	)
+	| unique
+	| map($meta[.])
+')"
 if [ "$(jq <<<"$vulns" -r 'length')" -le 0 ]; then
 	printf '%s\n' "$out"
 	exit 1
