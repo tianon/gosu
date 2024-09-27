@@ -18,23 +18,33 @@ for variant in "${preferredOrder[@]}"; do
 		echo >&2 "error: mismatched version in '$variant' ('$version' vs '$variantVersion')"
 		exit 1
 	fi
-	jq="${jq:+$jq, }$variant: (.[$i].arches | keys_unsorted)"
+	jq="${jq:+$jq, }$variant: (.[$i] | { ref: .ref, arches: .arches | keys_unsorted })"
 	froms["$i"]="$from"
 	(( i++ )) || :
 done
 arches="$(bashbrew remote arches --json "${froms[@]}" | jq -sc "{ $jq }")" # { alpine: [ "amd64", ... ], debian: [ "amd64", ... ] }
 
 exec jq <<<"$arches" -r --arg commit "$commit" --arg version "$version" '
-	with_entries(select(length > 0))
+	map_values(select(.arches | length > 0))
 	| keys_unsorted as $variants
-	| (add | unique) as $arches
-	| . as $variantArches
+	| with_entries(.value |= .arches) as $variantArches
+	| ($variantArches | add | unique) as $arches
+	| with_entries(.value |= (
+		.ref
+		| sub("^(docker[.]io/(library/)?)?"; "")
+		| split(":")
+		| if .[0] == "alpine" then
+			join("") # alpine3.20, etc
+		elif .[0] == "debian" or .[0] == "ubuntu" then
+			.[1] | split("-")[0] # "bookworm", etc
+		else empty end
+	)) as $variantAlias
 	| (
 		reduce (
 			to_entries[]
 			| {
 				variant: .key,
-				arch: .value[],
+				arch: .value.arches[],
 			}
 		) as $m ({};
 			if has($m.arch) then . else
@@ -67,8 +77,9 @@ exec jq <<<"$arches" -r --arg commit "$commit" --arg version "$version" '
 
 		(
 			$variants[]
+			| $variantAlias[.] as $alias
 			| {
-				Tags: [ "\($version)-\(.)", . ],
+				Tags: [ "\($version)-\(.)", ., "\($version)-\($alias // empty)", $alias // empty ],
 				Architectures: $variantArches[.],
 				File: "Dockerfile.\(.)",
 			},
@@ -77,7 +88,7 @@ exec jq <<<"$arches" -r --arg commit "$commit" --arg version "$version" '
 				. as $variant
 				| $variantArches[.][]
 				| {
-					Tags: [ "\($variant)-\(.)", if $archVariants[.] == $variant then . else empty end ],
+					Tags: [ "\($variant)-\(.)", "\($alias // empty)-\(.)", if $archVariants[.] == $variant then . else empty end ],
 					Architectures: .,
 					File: "Dockerfile.\($variant)",
 				}
