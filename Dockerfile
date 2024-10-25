@@ -1,4 +1,4 @@
-FROM golang:1.20.5-bookworm
+FROM golang:1.23.2-bookworm
 
 RUN set -eux; \
 	apt-get update; \
@@ -30,7 +30,7 @@ RUN set -eux; \
 # disable CGO for ALL THE THINGS (to help ensure no libc)
 ENV CGO_ENABLED 0
 
-WORKDIR /go/src/github.com/tianon/gosu
+WORKDIR /go/src/github.com/crogl/gosu
 
 COPY go.mod go.sum ./
 RUN set -eux; \
