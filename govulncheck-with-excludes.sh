@@ -32,7 +32,7 @@ if ! command -v govulncheck > /dev/null; then
 			sh -euc '
 				# https://github.com/golang/vuln/releases
 				# (pinning version to avoid format changes like https://github.com/tianon/gosu/issues/144 surprising us unexpectedly)
-				go install golang.org/x/vuln/cmd/govulncheck@v1.1.2 > /dev/null
+				go install golang.org/x/vuln/cmd/govulncheck@v1.1.4 > /dev/null
 				exec "$GOPATH/bin/govulncheck" "$@"
 			' --
 		)
