@@ -7,10 +7,10 @@ usage() {
 	echo "       $0 --debian ./gosu-amd64"
 }
 
-df='Dockerfile.test-alpine'
+df='DockerTestAlpine/Dockerfile'
 case "${1:-}" in
-	--alpine | --debian)
-		df="Dockerfile.test-${1#--}"
+	--Alpine | --Debian)
+		df="DockerTest${1#--}/Dockerfile"
 		shift
 		;;
 esac

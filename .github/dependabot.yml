@@ -1,0 +1,22 @@
+version: 2
+updates:
+  - package-ecosystem: "gomod"
+    ignore:
+      - dependency-name: "*"
+        # ignore all major updates
+        update-types: ["version-update:semver-major"]
+    directory: "/"
+    schedule:
+      interval: "daily"
+    groups:
+      allgo:
+        applies-to: security-updates
+        patterns:
+          - "*"
+  - package-ecosystem: "docker"
+    directories:
+      - "/"
+      - "/DockerTestAlpine"
+      - "/DockerTestDebian"
+    schedule:
+      interval: "daily"
