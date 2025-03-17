@@ -58,16 +58,6 @@ If you're curious about the edge cases that `gosu` handles, see [`Dockerfile.tes
 
 ## Alternatives
 
-### `chroot`
-
-With the `--userspec` flag, `chroot` can provide similar benefits/behavior:
-
-```console
-$ docker run -it --rm ubuntu:trusty chroot --userspec=nobody / ps aux
-USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
-nobody       1  5.0  0.0   7136   756 ?        Rs+  17:04   0:00 ps aux
-```
-
 ### `setpriv`
 
 Available in newer `util-linux` (`>= 2.32.1-0.2`, in Debian; https://manpages.debian.org/buster/util-linux/setpriv.1.en.html):
@@ -76,6 +66,16 @@ Available in newer `util-linux` (`>= 2.32.1-0.2`, in Debian; https://manpages.de
 $ docker run -it --rm buildpack-deps:buster-scm setpriv --reuid=nobody --regid=nogroup --init-groups ps faux
 USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
 nobody       1  5.0  0.0   9592  1252 pts/0    RNs+ 23:21   0:00 ps faux
+```
+
+### `chroot`
+
+With the `--userspec` flag, `chroot` can provide similar benefits/behavior:
+
+```console
+$ docker run -it --rm ubuntu:trusty chroot --userspec=nobody / ps aux
+USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+nobody       1  5.0  0.0   7136   756 ?        Rs+  17:04   0:00 ps aux
 ```
 
 ### `su-exec`
