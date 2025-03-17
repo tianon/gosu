@@ -54,7 +54,7 @@ Additionally, due to the fact that `gosu` is using Docker's own code for process
 
 If you're curious about the edge cases that `gosu` handles, see [`Dockerfile.test-alpine`](Dockerfile.test-alpine) for the "test suite" (and the associated [`test.sh`](test.sh) script that wraps this up for testing arbitrary binaries).
 
-(Note that `sudo` has different goals from this project, and it is *not* intended to be a `sudo` replacement; for example, see [this Stack Overflow answer](https://stackoverflow.com/a/48105623) for a short explanation of why `sudo` does `fork`+`exec` instead of just `exec`.)
+(Note that `sudo` has different goals from this project, and it is *not* intended to be a `sudo` replacement; for example, see [this Stack Overflow answer](https://stackoverflow.com/a/48105623/433558) for a short explanation of why `sudo` does `fork`+`exec` instead of just `exec`.)
 
 ## Alternatives
 
