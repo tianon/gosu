@@ -33,9 +33,7 @@ ENV CGO_ENABLED 0
 WORKDIR /go/src/github.com/tianon/gosu
 
 COPY go.mod go.sum ./
-RUN set -eux; \
-	go mod download; \
-	go mod verify
+RUN go mod download
 
 COPY *.go ./
 
