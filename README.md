@@ -54,19 +54,9 @@ Additionally, due to the fact that `gosu` is using Docker's own code for process
 
 If you're curious about the edge cases that `gosu` handles, see [`Dockerfile.test-alpine`](Dockerfile.test-alpine) for the "test suite" (and the associated [`test.sh`](test.sh) script that wraps this up for testing arbitrary binaries).
 
-(Note that `sudo` has different goals from this project, and it is *not* intended to be a `sudo` replacement; for example, see [this Stack Overflow answer](https://stackoverflow.com/a/48105623) for a short explanation of why `sudo` does `fork`+`exec` instead of just `exec`.)
+(Note that `sudo` has different goals from this project, and it is *not* intended to be a `sudo` replacement; for example, see [this Stack Overflow answer](https://stackoverflow.com/a/48105623/433558) for a short explanation of why `sudo` does `fork`+`exec` instead of just `exec`.)
 
 ## Alternatives
-
-### `chroot`
-
-With the `--userspec` flag, `chroot` can provide similar benefits/behavior:
-
-```console
-$ docker run -it --rm ubuntu:trusty chroot --userspec=nobody / ps aux
-USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
-nobody       1  5.0  0.0   7136   756 ?        Rs+  17:04   0:00 ps aux
-```
 
 ### `setpriv`
 
@@ -76,6 +66,16 @@ Available in newer `util-linux` (`>= 2.32.1-0.2`, in Debian; https://manpages.de
 $ docker run -it --rm buildpack-deps:buster-scm setpriv --reuid=nobody --regid=nogroup --init-groups ps faux
 USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
 nobody       1  5.0  0.0   9592  1252 pts/0    RNs+ 23:21   0:00 ps faux
+```
+
+### `chroot`
+
+With the `--userspec` flag, `chroot` can provide similar benefits/behavior:
+
+```console
+$ docker run -it --rm ubuntu:trusty chroot --userspec=nobody / ps aux
+USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+nobody       1  5.0  0.0   7136   756 ?        Rs+  17:04   0:00 ps aux
 ```
 
 ### `su-exec`
