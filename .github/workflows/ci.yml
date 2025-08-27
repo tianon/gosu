@@ -17,15 +17,32 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: sudo apt-get update && sudo apt-get install -y --no-install-recommends binfmt-support qemu-user-static
+
+      - name: hack in qemu-binfmt
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends binfmt-support qemu-user-static
+
       - run: ./build.sh
+
+      # explicitly test our (native) amd64/i386 binaries
       - run: ./test.sh gosu-amd64
       - run: ./test.sh gosu-i386
       - run: ./test.sh --debian gosu-amd64
       - run: ./test.sh --debian gosu-i386
+
+      # now that we've successfully tested gosu itself, let's hack the test suite a little bit to not use setuid (and to have util-linux's setpriv installed) so we can also smoke test "setpriv-wrapper.sh"
+      - name: hack tests for setpriv
+        run: |
+          sed -ri -e '/^USER /d' Dockerfile.test-*
+          awk '{ print } toupper($1) == "FROM" { print "RUN apk add --no-cache setpriv" }' Dockerfile.test-alpine > Dockerfile.test-alpine.new
+          mv Dockerfile.test-alpine.new Dockerfile.test-alpine
+      - run: ./test.sh setpriv-wrapper.sh
+      - run: ./test.sh --debian setpriv-wrapper.sh
+
+      # smoke test our Docker image builds
       - run: docker build --pull --file hub/Dockerfile.alpine hub
       - run: docker build --pull --file hub/Dockerfile.debian hub
 
+      # run "govulncheck" automatically to ensure we don't have any new/unknown vulnerabilities
       - name: govulncheck
         run: |
           for gosu in gosu-*; do
