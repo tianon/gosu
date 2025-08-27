@@ -31,3 +31,13 @@ jobs:
           for gosu in gosu-*; do
             ./govulncheck-with-excludes.sh -mode=binary "$gosu"
           done
+
+      - name: Release
+        if: github.ref_type == 'tag'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            gosu-*
+            SHA256SUMS
+          draft: false
+          prerelease: false
