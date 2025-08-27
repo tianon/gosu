@@ -1,13 +1,11 @@
-FROM debian:bookworm-slim
+FROM debian:trixie-slim
 
 # https://github.com/tianon/gosu/releases
 ENV GOSU_VERSION 1.17
 
 RUN set -eux; \
 	savedAptMark="$(apt-mark showmanual)"; \
-	apt-get update; \
-	apt-get install -y --no-install-recommends ca-certificates dirmngr gnupg wget; \
-	rm -rf /var/lib/apt/lists/*; \
+	apt-get install --update -y --no-install-recommends ca-certificates dirmngr gnupg wget; \
 	dpkgArch="$(dpkg --print-architecture | awk -F- '{ print $NF }')"; \
 	wget -O /usr/local/bin/gosu.asc "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$dpkgArch.asc"; \
 	wget -O /usr/local/bin/gosu "https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$dpkgArch"; \
@@ -19,6 +17,7 @@ RUN set -eux; \
 	apt-mark auto '.*' > /dev/null; \
 	[ -z "$savedAptMark" ] || apt-mark manual $savedAptMark > /dev/null; \
 	apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
+	apt-get dist-clean; \
 	chmod +x /usr/local/bin/gosu; \
 	gosu --version; \
 	gosu nobody true; \
