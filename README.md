@@ -80,7 +80,7 @@ nobody       1  5.0  0.0   7136   756 ?        Rs+  17:04   0:00 ps aux
 
 ### `su-exec`
 
-In the Alpine Linux ecosystem, [`su-exec`](https://github.com/ncopa/su-exec) is a minimal re-write of `gosu` in C, making for a much smaller binary, and is available in the `main` Alpine package repository.
+In the Alpine Linux ecosystem, [`su-exec`](https://github.com/ncopa/su-exec) is a minimal re-write of `gosu` in C, making for a much smaller binary, and is available in the `main` Alpine package repository.  Versions older than 0.3 had [a pretty severe parser bug](https://github.com/ncopa/su-exec/pull/26), so make sure you're using version 0.3 or above.
 
 ### Others
 
