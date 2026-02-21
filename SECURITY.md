@@ -14,6 +14,10 @@ Similar to the how traditional Linux distributions such as Debian handle rebuild
 
 As above, if you have a "security scanning" tool which does not agree with this policy, please take that up with your scanning tool vendor (report as a false positive, improve the tool to use `govulncheck`, etc).
 
+## See Also
+
+- https://words.filippo.io/dependabot/
+
 # Reporting Vulnerabilities
 
 The surface area of `gosu` itself is really limited -- it only directly contains a small amount of Go code to instrument an interface that is part of [`github.com/moby/sys/user` (the Docker Engine's `--user` parsing code, to be exact)](https://github.com/moby/sys/tree/main/user) (and which itself is a pretty limited interface) intended for providing the same behavior as Docker's `--user` flag (switching from `root` to a less privileged user), but from within an already running container.
