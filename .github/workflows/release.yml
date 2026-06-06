@@ -22,7 +22,7 @@ jobs:
     name: govulncheck
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: tianon/actions/checkout/composite@581498642ee39d41dc3a801d22b3f7f42a95acc7 # HEAD
 
       - name: download
         run: |
