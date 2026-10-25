@@ -61,14 +61,14 @@ COPY *.go ./
 # gosu-$(dpkg --print-architecture)
 RUN ARCH=amd64    GOARCH=amd64       gosu-build-and-test.sh
 RUN ARCH=i386     GOARCH=386         gosu-build-and-test.sh
+RUN ARCH=arm64    GOARCH=arm64       gosu-build-and-test.sh
 RUN ARCH=armel    GOARCH=arm GOARM=5 gosu-build-and-test.sh
 RUN ARCH=armhf    GOARCH=arm GOARM=6 gosu-build-and-test.sh
 #RUN ARCH=armhf    GOARCH=arm GOARM=7 gosu-build-and-test.sh # boo Raspberry Pi, making life hard (armhf-is-v7 vs armhf-is-v6 ...)
-RUN ARCH=arm64    GOARCH=arm64       gosu-build-and-test.sh
+RUN ARCH=loong64  GOARCH=loong64     gosu-build-and-test.sh
 RUN ARCH=mips64el GOARCH=mips64le    gosu-build-and-test.sh
 RUN ARCH=ppc64el  GOARCH=ppc64le     gosu-build-and-test.sh
 RUN ARCH=riscv64  GOARCH=riscv64     gosu-build-and-test.sh
 RUN ARCH=s390x    GOARCH=s390x       gosu-build-and-test.sh
-RUN ARCH=loong64  GOARCH=loong64     gosu-build-and-test.sh
 
 RUN set -eux; go version -m /go/bin/gosu-*; ls -lAFh /go/bin/gosu-*; file /go/bin/gosu-*
