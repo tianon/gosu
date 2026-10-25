@@ -68,6 +68,8 @@ USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
 nobody       1  5.0  0.0   9592  1252 pts/0    RNs+ 23:21   0:00 ps faux
 ```
 
+In this repository, you'll find an official `setpriv-wrapper.sh` that implements a `gosu`-compatible interface which passes `gosu`'s test suite (in pure POSIX shell).
+
 ### `chroot`
 
 With the `--userspec` flag, `chroot` can provide similar benefits/behavior:

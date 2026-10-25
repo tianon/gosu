@@ -63,6 +63,18 @@ jobs:
       - run: ./test.sh --debian gosu-amd64
       - run: ./test.sh --debian gosu-i386
 
+      # now that we've successfully tested gosu itself, let's hack the test suite a little bit to not use setuid (and to have util-linux's setpriv installed) so we can also smoke test "setpriv-wrapper.sh"
+      - name: hack tests for setpriv
+        run: |
+          sed -ri -e '/^USER /d' Dockerfile.test-*
+          awk '{ print } toupper($1) == "FROM" { print "RUN apk add --no-cache setpriv" }' Dockerfile.test-alpine > Dockerfile.test-alpine.new
+          mv Dockerfile.test-alpine.new Dockerfile.test-alpine
+          git diff Dockerfile.test-*
+
+          ./test.sh setpriv-wrapper.sh
+          ./test.sh --debian setpriv-wrapper.sh
+        if: matrix.go == 'release'
+
       # smoke test our Docker image builds
       - run: docker build --pull --file hub/Dockerfile.alpine hub
         if: matrix.go == 'release'
