@@ -91,8 +91,9 @@ RUN set -eux; \
 		aarch64) dpkgArch='arm64' ;; \
 		armv[67]*) dpkgArch='armhf' ;; \
 		i[3456]86) dpkgArch='i386' ;; \
+		loongarch64) dpkgArch='loong64' ;; \
 		ppc64le) dpkgArch='ppc64el' ;; \
-		riscv64 | s390x | loongarch64) dpkgArch="$rpmArch" ;; \
+		riscv64 | s390x) dpkgArch="$rpmArch" ;; \
 		x86_64) dpkgArch='amd64' ;; \
 		*) echo >&2 "error: unknown/unsupported architecture '$rpmArch'"; exit 1 ;; \
 	esac; \
